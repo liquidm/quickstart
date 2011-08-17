@@ -271,32 +271,25 @@ setup_network_post() {
   if [ -n "${net_devices}" ]; then
     for net_device in ${net_devices}; do
       local device="$(echo ${net_device} | cut -d '|' -f1)"
-      local ipdhcp="$(echo ${net_device} | cut -d '|' -f2)"
-      local gateway="$(echo ${net_device} | cut -d '|' -f3)"
-      if [ "${ipdhcp}" = "dhcp" ] || [ "${ipdhcp}" = "DHCP" ]; then
-        echo "config_${device}=( \"dhcp\" )" >> ${chroot_dir}/etc/conf.d/net
-      elif [ "${ipdhcp}" = "current" ]; then
-        if [ "`ifconfig | grep -C 3 ${device} | grep inet`" != "" ]; then
-          DATA=`ifconfig | grep -C 3 ${device} | grep inet | cut -c 16-`
-          IP=`echo ${DATA} | awk '{print $1}' | cut -d':' -f2`
-          BC=`echo ${DATA} | awk '{print $2}' | cut -d':' -f2`
-          NM=`echo ${DATA} | awk '{print $3}' | cut -d':' -f2`
-          DGW=`route -n | grep ${device} | awk '{ if ($1 == "0.0.0.0") {print $2} }'`
+      local ifup=${chroot_dir}/etc/ifup.${device}
 
-          echo -e "config_${device}=(\"${IP} netmask ${NM} broadcast ${BC}\")" >> ${chroot_dir}/etc/conf.d/net
-	  echo -e "routes_${device}=(\"default via ${DGW}\")" >> ${chroot_dir}/etc/conf.d/net
-        else
-          debug setup_network_post "No current network config found on ${device}"
-        fi
-      else
-        echo -e "config_${device}=( \"${ipdhcp}\" )\nroutes_${device}=( \"default via ${gateway}\" )" >> ${chroot_dir}/etc/conf.d/net
-      fi
-      if [ ! -e "${chroot_dir}/etc/init.d/net.${device}" ]; then
-        spawn_chroot "ln -s net.lo /etc/init.d/net.${device}" || die "could not create symlink for device ${device}"
-      fi
-      spawn_chroot "rc-update add net.${device} default" || die "could not add net.${device} to the default runlevel"
+      rm -f ${ifup}
+
+      (
+      echo "ip link set ${device} up"
+      ip addr show dev ${device} | grep 'inet .*global' | awk "{ print \"ip addr add \" $2 \" dev ${device}\" }"
+      ip route list | grep default.*${device} | awk '{ print "ip route add default via " $3 }'
+      ) > ${ifup}
+
+      spawn_chroot "rc-update del net.${device} boot"
+      spawn_chroot "rc-update del net.${device} default"
     done
   fi
+
+  spawn_chroot "rc-update del net.lo boot"
+  spawn_chroot "rc-update del net.lo default"
+
+  spawn_chroot "rc-update add network boot" || die "could not add network to the boot runlevel"
 }
 
 add_and_remove_services() {
