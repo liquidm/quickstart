@@ -1,7 +1,7 @@
 sanity_check_config_bootloader() {
   if [ -z "${bootloader}" ]; then
-    debug sanity_check_config_bootloader "bootloader not set...assuming syslinux"
-    bootloader="syslinux"
+    debug sanity_check_config_bootloader "bootloader not set...assuming grub"
+    bootloader="grub"
   fi
 }
 
@@ -25,5 +25,41 @@ EOB
 
   for device in ${bootloader_install_device}; do
     spawn "dd if=${chroot_dir}/usr/share/syslinux/mbr.bin of=${device}"
+  done
+}
+
+configure_bootloader_grub() {
+  local root="$(get_boot_and_root | cut -d '|' -f2)"
+
+  # Clear out any existing device.map for a "clean" start
+  rm ${chroot_dir}/boot/grub/device.map &>/dev/null
+
+  echo -e "default 0\ntimeout 10\n" > ${chroot_dir}/boot/grub/grub.conf
+
+  for boot in ${bootloader_install_device}; do
+    local boot_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
+    local boot_minor="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f2)"
+
+    echo "title Gentoo Linux on ${boot_device}" >> ${chroot_dir}/boot/grub/grub.conf
+    local grub_device="$(map_device_to_grub_device ${boot_device})"
+    if [ -z "${grub_device}" ]; then
+      error "could not map boot device ${boot_device} to grub device"
+      return 1
+    fi
+    echo -en "root (${grub_device},$(expr ${boot_minor} - 1))\nkernel /boot/kernel " >> ${chroot_dir}/boot/grub/grub.conf
+    echo "root=${root}\n" >> ${chroot_dir}/boot/grub/grub.conf
+  done
+
+  if ! spawn_chroot "grep -v rootfs /proc/mounts > /etc/mtab"; then
+    error "could not copy /proc/mounts to /etc/mtab"
+    return 1
+  fi
+
+  for boot in ${bootloader_install_device}; do
+    local boot_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
+    if ! spawn_chroot "grub-install ${boot_device}"; then
+      error "could not install grub to ${boot_device}"
+      return 1
+    fi
   done
 }
