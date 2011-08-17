@@ -294,8 +294,8 @@ sanity_check_config() {
     logging_daemon="syslog-ng"
   fi
   if [ -z "${cron_daemon}" ]; then
-    warn "cron_daemon not set...assuming vixie-cron"
-    cron_daemon="vixie-cron"
+    warn "cron_daemon not set...assuming dcron"
+    cron_daemon="dcron"
   fi
 
   if ! sanity_check_config_partition; then
