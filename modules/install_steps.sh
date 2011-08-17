@@ -211,7 +211,7 @@ build_kernel() {
     spawn_chroot "emerge genkernel" || die "could not emerge genkernel"
     if [ -n "${kernel_config_uri}" ]; then
       fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig" || die "could not fetch kernel config"
-      spawn_chroot "genkernel --kernel-config=/tmp/kconfig ${genkernel_opts} kernel" || die "could not build custom kernel"
+      spawn_chroot "genkernel --kernel-config=/tmp/kconfig --symlink ${genkernel_opts} kernel" || die "could not build custom kernel"
     else
       spawn_chroot "genkernel ${genkernel_opts} all" || die "could not build generic kernel"
     fi

@@ -101,12 +101,6 @@ bootloader() {
   bootloader="${pkg}"
 }
 
-bootloader_kernel_args() {
-  local kernel_args=$1
-
-  bootloader_kernel_args="${kernel_args}"
-}
-
 logger() {
   local pkg=$1
 
@@ -148,7 +142,11 @@ tree_type() {
 bootloader_install_device() {
   local device=$1
 
-  bootloader_install_device="${device}"
+  if [ -n "${bootloader_install_device}" ]; then
+    bootloader_install_device="${bootloader_install_device} ${device}"
+  else
+    bootloader_install_device="${device}"
+  fi
 }
 
 chroot_dir() {
@@ -297,10 +295,6 @@ sanity_check_config() {
     warn "cron_daemon not set...assuming vixie-cron"
     cron_daemon="vixie-cron"
   fi
-#  if [ -z "${bootloader}" ]; then
-#    warn "bootloader not set...assuming grub"
-#    bootloader="grub"
-#  fi
 
   if ! sanity_check_config_partition; then
     fatal=1
