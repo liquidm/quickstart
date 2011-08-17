@@ -296,9 +296,6 @@ sanity_check_config() {
     cron_daemon="dcron"
   fi
 
-  if ! sanity_check_config_partition; then
-    fatal=1
-  fi
   if ! sanity_check_config_bootloader; then
     fatal=1
   fi
