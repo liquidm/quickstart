@@ -1,5 +1,3 @@
-# $Id$
-
 run_emerge() {
   pkgs=$1
 

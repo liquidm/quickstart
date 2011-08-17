@@ -1,5 +1,3 @@
-# $Id$
-
 sanity_check_config_bootloader() {
   if [ -z "${bootloader}" ]; then
     warn "bootloader not set...assuming syslinux"

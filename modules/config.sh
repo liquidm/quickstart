@@ -1,5 +1,3 @@
-# $Id$
-
 install_mode() {
   local mode=$1
 

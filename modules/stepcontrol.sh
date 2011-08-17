@@ -1,5 +1,3 @@
-# $Id$
-
 isafunc() {
   local func=$1
 

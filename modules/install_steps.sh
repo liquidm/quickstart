@@ -1,5 +1,3 @@
-# $Id$
-
 run_pre_install_script() {
   if [ -n "${pre_install_script_uri}" ]; then
     fetch "${pre_install_script_uri}" "${chroot_dir}/var/tmp/pre_install_script" || die "could not fetch pre-install script"
@@ -105,7 +103,6 @@ mount_local_partitions() {
       local type=$(echo ${mount} | cut -d ':' -f2)
       local mountpoint=$(echo ${mount} | cut -d ':' -f3)
       local mountopts=$(echo ${mount} | cut -d ':' -f4)
-#      [ -n "${type}" ] && type="-t ${type}"
       [ -n "${mountopts}" ] && mountopts="-o ${mountopts}"
       case "${type}" in
         swap)
@@ -384,4 +381,3 @@ failure_cleanup() {
     spawn "mdadm --manage --stop /dev/${array}" || die "could not stop mdraid array ${array}"
   done
 }
-

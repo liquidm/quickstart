@@ -1,5 +1,3 @@
-# $Id$
-
 get_arch() {
   ${linux32} uname -m | sed -e 's:i[3-6]86:x86:' -e 's:x86_64:amd64:'
 }

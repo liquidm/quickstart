@@ -1,5 +1,3 @@
-# $Id$
-
 get_filename_from_uri() {
   local uri=$1
 

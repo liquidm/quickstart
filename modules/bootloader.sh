@@ -1,5 +1,3 @@
-# $Id$
-
 get_boot_and_root() {
   for mount in ${localmounts}; do
     local devnode=$(echo ${mount} | cut -d ':' -f1)

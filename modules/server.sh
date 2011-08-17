@@ -1,5 +1,3 @@
-# $Id$
-
 server_init() {
   if [ -n "$(echo ${server} | grep :)" ]; then
     server_host=$(echo "${server}" | cut -d : -f 1)

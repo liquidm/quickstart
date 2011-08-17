@@ -1,5 +1,3 @@
-# $Id$
-
 chroot_dir=/mnt/gentoo
 output_logfile=/tmp/installoutput.log
 
