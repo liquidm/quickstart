@@ -1,6 +1,6 @@
 sanity_check_config_bootloader() {
   if [ -z "${bootloader}" ]; then
-    warn "bootloader not set...assuming syslinux"
+    debug sanity_check_config_bootloader "bootloader not set...assuming syslinux"
     bootloader="syslinux"
   fi
 }

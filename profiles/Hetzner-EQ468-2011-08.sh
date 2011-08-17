@@ -41,7 +41,8 @@ rcadd lvm boot
 rcadd sshd default
 
 pre_install() {
-	/etc/init.d/ntp stop
-	ntpdate de.pool.ntp.org
-	hwclock --systohc
+	notify "Setting the system clock"
+	spawn "/etc/init.d/ntp stop"
+	spawn "ntpdate pool.ntp.org"
+	spawn "hwclock --systohc"
 }

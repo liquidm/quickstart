@@ -284,15 +284,15 @@ sanity_check_config() {
     timezone=UTC
   fi
   if [ -z "${kernel_sources}" ]; then
-    warn "kernel_sources not set...assuming gentoo-sources"
-    kernel_sources="gentoo-sources"
+    debug sanity_check_config "kernel_sources not set...assuming vserver-sources"
+    kernel_sources="vserver-sources"
   fi
   if [ -z "${logging_daemon}" ]; then
-    warn "logging_daemon not set...assuming syslog-ng"
+    debug sanity_check_config "logging_daemon not set...assuming syslog-ng"
     logging_daemon="syslog-ng"
   fi
   if [ -z "${cron_daemon}" ]; then
-    warn "cron_daemon not set...assuming dcron"
+    debug sanity_check_config "cron_daemon not set...assuming dcron"
     cron_daemon="dcron"
   fi
 
