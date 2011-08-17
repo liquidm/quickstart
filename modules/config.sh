@@ -134,9 +134,11 @@ stage_uri() {
 tree_type() {
   local type=$1
   local uri=$2
+  local branch=$3
 
   tree_type="${type}"
   portage_snapshot_uri="${uri}"
+  portage_snapshot_branch="${branch}"
 }
 
 bootloader_install_device() {

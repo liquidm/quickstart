@@ -178,6 +178,11 @@ install_portage_tree() {
     unpack_tarball "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" "${chroot_dir}/usr" || die "could not unpack portage snapshot"
   elif [ "${tree_type}" = "webrsync" ]; then
     spawn_chroot "emerge-webrsync" || die "could not emerge-webrsync"
+  elif [ "${tree_type}" = "git-snapshot" ]; then
+    fetch "${portage_snapshot_uri}" "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" || die "could not fetch portage snapshot"
+    unpack_tarball "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" "${chroot_dir}/usr" || die "could not unpack portage snapshot"
+    spawn_chroot "git --git-dir=/usr/portage/.git --work-tree=/usr/portage checkout ${portage_snapshot_branch}" || die "could not checkout portage branch"
+    spawn_chroot "emerge --sync" || die "could not sync portage tree"
   elif [ "${tree_type}" = "none" ]; then
     warn "'none' specified...skipping"
   else
