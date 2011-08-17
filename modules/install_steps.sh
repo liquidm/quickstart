@@ -218,7 +218,7 @@ build_kernel() {
       fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig" || die "could not fetch kernel config"
       spawn_chroot "genkernel --kernel-config=/tmp/kconfig --symlink ${genkernel_opts} kernel" || die "could not build custom kernel"
     else
-      spawn_chroot "genkernel ${genkernel_opts} all" || die "could not build generic kernel"
+      debug build_kernel "no kernel_config_uri ...skipping kernel build"
     fi
   fi
 }
