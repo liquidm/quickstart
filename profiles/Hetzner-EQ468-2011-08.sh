@@ -10,9 +10,9 @@ timezone Europe/Berlin
 kernel_sources vserver-sources
 kernel_config_uri https://raw.github.com/hollow/zentoo-quickstart/master/profiles/Hetzner-EQ468-2011-08.kconfig
 
-bootloader syslinux
-bootloader_install_device /dev/sda
-bootloader_install_device /dev/sdb
+bootloader grub
+bootloader_install_device /dev/sda1
+bootloader_install_device /dev/sdb1
 
 part sda 1 fd 1GB
 part sda 2 fd +
@@ -39,6 +39,8 @@ extra_packages mdadm lvm2 xfsprogs
 
 rcadd lvm boot
 rcadd sshd default
+
+net eth0 current
 
 pre_install() {
 	notify "Setting the system clock"
