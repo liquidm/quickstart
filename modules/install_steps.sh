@@ -209,8 +209,8 @@ build_kernel() {
   if [ "${kernel_sources}" = "none" ]; then
     debug build_kernel "kernel_sources is 'none'...skipping kernel build"
   else
-    spawn_chroot "emerge ${kernel_sources}" || die "could not emerge kernel sources"
-    spawn_chroot "emerge genkernel" || die "could not emerge genkernel"
+    spawn_chroot "emerge -n ${kernel_sources}" || die "could not emerge kernel sources"
+    spawn_chroot "emerge -n genkernel" || die "could not emerge genkernel"
     if [ -n "${kernel_config_uri}" ]; then
       fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig" || die "could not fetch kernel config"
       spawn_chroot "genkernel --kernel-config=/tmp/kconfig --symlink ${genkernel_opts} kernel" || die "could not build custom kernel"
@@ -224,7 +224,7 @@ install_logging_daemon() {
   if [ "${logging_daemon}" = "none" ]; then
     debug install_logging_daemon "logging_daemon is 'none'...skipping"
   else
-    spawn_chroot "emerge ${logging_daemon}" || die "could not emerge logging daemon"
+    spawn_chroot "emerge -n ${logging_daemon}" || die "could not emerge logging daemon"
     spawn_chroot "rc-update add ${logging_daemon} default" || die "could not add logging daemon to default runlevel"
   fi
 }
@@ -233,7 +233,7 @@ install_cron_daemon() {
   if [ "${cron_daemon}" = "none" ]; then
     debug install_cron_daemon "cron_daemon is 'none'...skipping"
   else
-    spawn_chroot "emerge ${cron_daemon}" || die "could not emerge cron daemon"
+    spawn_chroot "emerge -n ${cron_daemon}" || die "could not emerge cron daemon"
     spawn_chroot "rc-update add ${cron_daemon} default" || die "could not add cron daemon to default runlevel"
   fi
 }
@@ -310,7 +310,7 @@ install_bootloader() {
   if [ "${bootloader}" = "none" ]; then
     debug install_bootloader "bootloader is 'none'...skipping"
   else
-    spawn_chroot "emerge ${bootloader}" || die "could not emerge bootloader"
+    spawn_chroot "emerge -n ${bootloader}" || die "could not emerge bootloader"
   fi
 }
 
@@ -330,7 +330,7 @@ install_extra_packages() {
   if [ -z "${extra_packages}" ]; then
     debug install_extra_packages "no extra packages specified"
   else
-    spawn_chroot "emerge ${extra_packages}" || die "could not emerge extra packages"
+    spawn_chroot "emerge -n ${extra_packages}" || die "could not emerge extra packages"
   fi
 }
 

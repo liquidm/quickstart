@@ -7,9 +7,12 @@ tree_type git-snapshot http://www.zentoo.org/downloads/snapshots/portage-current
 rootpw icanhazpower
 timezone Europe/Berlin
 
-bootloader syslinux
 kernel_sources vserver-sources
 kernel_config_uri https://raw.github.com/hollow/zentoo-quickstart/master/profiles/Hetzner-EQ468-2011-08.kconfig
+
+bootloader syslinux
+bootloader_install_device /dev/sda
+bootloader_install_device /dev/sdb
 
 part sda 1 fd 1GB
 part sda 2 fd +
