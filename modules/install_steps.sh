@@ -378,6 +378,6 @@ failure_cleanup() {
     rm /tmp/install.swapoff 2>/dev/null
   fi
   for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
-    spawn "mdadm --manage --stop /dev/${array}" || die "could not stop mdraid array ${array}"
+    spawn "mdadm --manage --stop /dev/${array}" || warn "could not stop mdraid array ${array}"
   done
 }
