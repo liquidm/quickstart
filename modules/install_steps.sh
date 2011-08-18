@@ -274,8 +274,8 @@ setup_network_post() {
 
       (
       echo "ip link set ${device} up"
-      ip addr show dev ${device} | grep 'inet .*global' | awk "{ print \"ip addr add \" $2 \" dev ${device}\" }"
-      ip route list | grep default.*${device} | awk '{ print "ip route add default via " $3 }'
+      echo "ip addr add $(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }') dev ${device}"
+      echo "ip route add default via $(ip route list | grep default.*${device} | awk '{ print $3 }')"
       ) > ${ifup}
 
       spawn_chroot "rc-update del net.${device} boot"
