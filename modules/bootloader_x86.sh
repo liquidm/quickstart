@@ -47,7 +47,7 @@ configure_bootloader_grub() {
       return 1
     fi
     echo -en "root (${grub_device},$(expr ${boot_minor} - 1))\nkernel /boot/kernel " >> ${chroot_dir}/boot/grub/grub.conf
-    echo "root=${root}\n" >> ${chroot_dir}/boot/grub/grub.conf
+    echo -e "root=${root}\n" >> ${chroot_dir}/boot/grub/grub.conf
   done
 
   for boot in ${bootloader_install_device}; do
