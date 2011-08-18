@@ -50,14 +50,11 @@ configure_bootloader_grub() {
     echo "root=${root}\n" >> ${chroot_dir}/boot/grub/grub.conf
   done
 
-  if ! spawn_chroot "grep -v rootfs /proc/mounts > /etc/mtab"; then
-    error "could not copy /proc/mounts to /etc/mtab"
-    return 1
-  fi
-
   for boot in ${bootloader_install_device}; do
     local boot_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
-    if ! spawn_chroot "grub-install ${boot_device}"; then
+    local boot_minor="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f2)"
+    local grub_device="$(map_device_to_grub_device ${boot_device})"
+    if ! spawn_chroot "echo 'root (${grub_device},$(expr ${boot_minor} - 1))\nsetup (${grub_device})\nquit' | /sbin/grub --batch --no-floppy"; then
       error "could not install grub to ${boot_device}"
       return 1
     fi
