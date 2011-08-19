@@ -1,0 +1,36 @@
+#!/bin/bash
+
+address=$1
+profile=$2
+
+if [[ -z $address || -z $profile ]]; then
+	echo "Usage: $(basename $0) <address> <profile>"
+	exit 1
+fi
+
+tmpfile=$(mktemp)
+
+cat <<EOF > ${tmpfile}
+#!/bin/bash
+
+pushd /tmp
+
+wget -O quickstart.tar.gz https://github.com/hollow/zentoo-quickstart/tarball/master
+tar -xzf quickstart.tar.gz
+
+pushd hollow-zentoo-quickstart-*
+./quickstart ${profile}
+popd
+
+popd
+EOF
+
+cat ${tmpfile} | \
+ssh -t -l root \
+	-o "StrictHostKeyChecking no" \
+	-o "UserKnownHostsFile /dev/null" \
+	-o "GlobalKnownHostsFile /dev/null" \
+	${address} \
+	"bash -s"
+
+rm -f ${tmpfile}
