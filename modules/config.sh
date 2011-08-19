@@ -246,6 +246,10 @@ use_linux32() {
   linux32="linux32"
 }
 
+reboot() {
+  reboot="yes"
+}
+
 verbose() {
   verbose=1
 }

@@ -289,6 +289,12 @@ use_linux32 - Enable the use of linux32 for doing 32ul installs on 64-bit boxes
     use_linux32
 
 
+reboot - Reboot after quickstart has completed succesfully
+
+  Usage:
+    reboot
+
+
 verbose - Enable verbose mode (same as --verbose)
 
   Usage:
