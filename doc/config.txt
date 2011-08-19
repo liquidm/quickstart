@@ -280,16 +280,6 @@ skip - Skips an install step
     install step - name of step to skip
 
 
-server - Specify a quickstart server
-
-  Usage:
-    server <host>[:<port>]
-
-  Parameters:
-    host - hostname or IP address of quickstart server
-    port - port server is listening on (defaults to 8899)
-
-
 use_linux32 - Enable the use of linux32 for doing 32ul installs on 64-bit boxes
 
   Usage:

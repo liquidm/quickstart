@@ -241,11 +241,6 @@ skip() {
   eval "skip_${func}=1"
 }
 
-server() {
-  server=$1
-  server_init
-}
-
 use_linux32() {
   linux32="linux32"
 }

@@ -30,14 +30,6 @@ fetch() {
   fi
 }
 
-fetch_quickstart() {
-  local uri=$1
-  local localfile=$2
-
-  local realurl="http://${server_host}:${server_port}/$(get_path_from_uri "${uri}")"
-  fetch_http_https_ftp "${realurl}" "${localfile}"
-}
-
 fetch_http() {
   debug fetch_http "calling fetch_http_https_ftp() to do real work"
   fetch_http_https_ftp "$@"
