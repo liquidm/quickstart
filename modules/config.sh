@@ -139,6 +139,10 @@ tree_type() {
   portage_snapshot_branch="${branch}"
 }
 
+mirror() {
+  mirror=$1
+}
+
 bootloader_install_device() {
   local device=$1
 

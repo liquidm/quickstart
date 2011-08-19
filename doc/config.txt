@@ -1,5 +1,3 @@
-$Id$
-
 The follow is a list of all the valid configuration options with description and
 valid parameters.
 
@@ -164,6 +162,15 @@ tree_type - Specifies the portage tree type (defaults to sync)
            snapshot). you can also use 'none' to skip this step
     uri  - URI to the location of the portage snapshot if you specified
            'snapshot' for the type
+
+
+mirror - Specifies the distfiles mirror (default is empty)
+
+  Usage:
+    mirror <uri>
+
+  Parameters:
+    uri  - URI to the location of the distfiles mirror
 
 
 bootloader_install_device - Specifies the device to install the bootloader to

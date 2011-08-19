@@ -185,6 +185,9 @@ install_portage_tree() {
   else
     die "Unrecognized tree_type: ${tree_type}"
   fi
+  if [ -n "${mirror}" ]; then
+    echo GENTOO_MIRRORS=\"${mirror}\" >> ${chroot_dir}/etc/make.conf
+  fi
 }
 
 set_root_password() {
