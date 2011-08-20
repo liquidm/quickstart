@@ -1,8 +1,8 @@
-stage_uri http://www.zentoo.org/downloads/amd64/stage4-current.tar.bz2
+stage_uri http://www.zentoo.org/downloads/amd64/zentoo-host-amd64-current.tar.bz2
 tree_type git-snapshot http://www.zentoo.org/downloads/snapshots/portage-current.tar.bz2 11.0
 mirror http://ftp.spline.de/pub/gentoo/distfiles/
 
-rootpw icanhazpower
+rootpw tux
 timezone Europe/Berlin
 
 kernel_sources vserver-sources
