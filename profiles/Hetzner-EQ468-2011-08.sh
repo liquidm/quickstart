@@ -3,8 +3,6 @@
 
 . profiles/base.sh
 
-kernel_config_uri https://raw.github.com/hollow/zentoo-quickstart/master/profiles/Hetzner-EQ468-2011-08.kconfig
-
 bootloader_install_device /dev/sda1
 bootloader_install_device /dev/sdb1
 

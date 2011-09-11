@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.35-vs2.3.0.36.32-gentoo
-# Mon Oct 18 00:45:27 2010
+# Sun Sep 11 10:52:43 2011
 #
 CONFIG_64BIT=y
 # CONFIG_X86_32 is not set
@@ -878,8 +878,8 @@ CONFIG_E100=y
 CONFIG_NETDEV_1000=y
 # CONFIG_ACENIC is not set
 # CONFIG_DL2K is not set
-# CONFIG_E1000 is not set
-# CONFIG_E1000E is not set
+CONFIG_E1000=y
+CONFIG_E1000E=y
 # CONFIG_IP1000 is not set
 # CONFIG_IGB is not set
 # CONFIG_IGBVF is not set

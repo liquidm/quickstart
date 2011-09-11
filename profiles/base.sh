@@ -6,6 +6,7 @@ rootpw tux
 timezone Europe/Berlin
 
 kernel_sources vserver-sources
+kernel_config_uri https://raw.github.com/zentoo/quickstart/master/profiles/2.6.35-vs.2.3.0.36.32-generic.kconfig
 
 lvm_logvol vg 10G usr
 lvm_logvol vg 10G var
