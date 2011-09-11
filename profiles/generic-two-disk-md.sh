@@ -1,6 +1,3 @@
-# Hetzner EQ4/6/8 profile with Software RAID
-# see http://www.hetzner.de/hosting/produktmatrix/rootserver-produktmatrix-eq
-
 . profiles/base.sh
 
 bootloader_install_device /dev/sda1
