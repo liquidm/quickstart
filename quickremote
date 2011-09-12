@@ -13,20 +13,16 @@ tmpfile=$(mktemp)
 cat <<EOF > ${tmpfile}
 #!/bin/bash
 
-pushd /tmp
-
-wget -O quickstart.tar.gz https://github.com/hollow/zentoo-quickstart/tarball/master
+cd /tmp
+wget -q -O quickstart.tar.gz https://github.com/zentoo/quickstart/tarball/master
 tar -xzf quickstart.tar.gz
 
-pushd hollow-zentoo-quickstart-*
-./quickstart ${profile}
-popd
-
-popd
+cd zentoo-quickstart-*
+exec ./quickstart ${profile}
 EOF
 
 cat ${tmpfile} | \
-ssh -t -l root \
+ssh -l root \
 	-o "StrictHostKeyChecking no" \
 	-o "UserKnownHostsFile /dev/null" \
 	-o "GlobalKnownHostsFile /dev/null" \
