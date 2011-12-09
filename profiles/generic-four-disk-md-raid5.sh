@@ -17,8 +17,8 @@ part sdc 2 fd +
 part sdd 1 fd 1GB
 part sdd 2 fd +
 
-mdraid md1 --level=1 --raid-devices=4 /dev/sda1 /dev/sdb1 /dev/sdc1 /dev/sdd1
-mdraid md2 --level=5 --raid-devices=4 /dev/sda2 /dev/sdb2 /dev/sdc2 /dev/sdd2
+mdraid md1 --metadata=0.90 --level=1 --raid-devices=4 /dev/sda1 /dev/sdb1 /dev/sdc1 /dev/sdd1
+mdraid md2 --metadata=0.90 --level=5 --raid-devices=4 /dev/sda2 /dev/sdb2 /dev/sdc2 /dev/sdd2
 
 lvm_volgroup vg /dev/md2
 
