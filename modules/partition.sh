@@ -63,10 +63,12 @@ fdisk_command() {
 
   debug fdisk_command "running fdisk command '${cmd}' on device ${device}"
   spawn "echo -en '${cmd}\nw\n' | fdisk ${device}"
-  return $?
+  local ret=$?
 
   debug fdisk_command "sleeping 3 seconds after fdisk to prevent EBUSY from previous run"
   sleep 3
+
+  return ${ret}
 }
 
 local arch=$(get_arch)
