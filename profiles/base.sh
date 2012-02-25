@@ -5,7 +5,7 @@ mirror http://mirror.zentoo.org
 rootpw tux
 timezone Europe/Berlin
 
-kernel_sources vserver-sources
+kernel_sources zentoo-sources
 kernel_config_uri https://raw.github.com/zentoo/quickstart/master/profiles/3.2.7-zentoo-generic.kconfig
 
 lvm_logvol vg 10G usr
@@ -21,6 +21,7 @@ extra_packages lvm2 xfsprogs
 
 rcadd lvm boot
 rcadd sshd default
+rcadd udev-postmount default
 
 net eth0 current
 
