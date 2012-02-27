@@ -245,6 +245,10 @@ use_linux32() {
   linux32="linux32"
 }
 
+shutdown() {
+  shutdown="yes"
+}
+
 reboot() {
   reboot="yes"
 }

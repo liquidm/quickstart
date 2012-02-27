@@ -286,6 +286,12 @@ use_linux32 - Enable the use of linux32 for doing 32ul installs on 64-bit boxes
     use_linux32
 
 
+shutdown - Shutdown after quickstart has completed succesfully
+
+  Usage:
+    shutdown
+
+
 reboot - Reboot after quickstart has completed succesfully
 
   Usage:

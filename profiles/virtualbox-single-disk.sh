@@ -1,4 +1,4 @@
-. profiles/base.sh
+. profiles/common.sh
 
 bootloader_install_device /dev/sda1
 
@@ -10,3 +10,5 @@ lvm_volgroup vg /dev/sda2
 format /dev/sda1 ext3
 
 mountfs /dev/sda1 ext3 /
+
+shutdown
