@@ -4,7 +4,7 @@ post_install() {
 	echo "hostname=\"vagrant-zentoo\"" > ${chroot_dir}/etc/conf.d/hostname
 
 	# setup user
-	spawn_chroot "useradd -d /home/vagrant -g users -G wheel,portage,cron vagrant"
+	spawn_chroot "useradd -m -d /home/vagrant -g users -G wheel,portage,cron vagrant"
 	spawn_chroot "echo vagrant:vagrant | chpasswd"
 	spawn_chroot "curl -s -k -L https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub > /home/vagrant/.ssh/authorized_keys"
 
@@ -21,4 +21,14 @@ EOF
 	spawn_chroot "/mnt/VBoxLinuxAdditions.run --nox11"
 	spawn_chroot "umount /mnt"
 	spawn_chroot "emerge -C app-emulation/virtualbox-additions"
+
+	# cleanup
+	spawn_chroot "emerge -C ${kernel_sources}"
+	spawn_chroot "rm -rf /usr/src/linux-* /var/cache/genkernel"
+	spawn_chroot "rm -rf /usr/portage/distfiles/* /usr/portage/packages/*"
+
+	# compact disk image by zero filling unused space
+	for part in / /usr /var; do
+		spawn_chroot "cat /dev/zero > ${part}/zero.fill && sync && rm -f ${part}/zero.fill && sync"
+	done
 }

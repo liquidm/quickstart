@@ -363,6 +363,8 @@ run_post_install_script() {
 }
 
 finishing_cleanup() {
+  rm -f "${chroot_dir}/$(get_filename_from_uri ${stage_uri})" || warn "Could not remove stage tarball"
+  rm -f "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" || warn "could not remove portage tarball"
   spawn "cp ${logfile} ${chroot_dir}/root/$(basename ${logfile})" || warn "could not copy install logfile into chroot"
   if [ -e /tmp/install.umount ]; then
     for mnt in $(sort -r /tmp/install.umount); do
