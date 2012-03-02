@@ -271,15 +271,27 @@ setup_network_post() {
   if [ -n "${net_devices}" ]; then
     for net_device in ${net_devices}; do
       local device="$(echo ${net_device} | cut -d '|' -f1)"
+      local ipdhcp="$(echo ${net_device} | cut -d '|' -f2)"
+      local gateway="$(echo ${net_device} | cut -d '|' -f3)"
       local ifup=${chroot_dir}/etc/ifup.${device}
 
       rm -f ${ifup}
 
-      (
-      echo "ip link set ${device} up"
-      echo "ip addr add $(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }') dev ${device}"
-      echo "ip route add default via $(ip route list | grep default.*${device} | awk '{ print $3 }')"
-      ) > ${ifup}
+      if [[ ${ipdhcp} == "dhcp" ]]; then
+        echo "dhcpcd ${device}" > ${ifup}
+      elif [[ ${ipdhcp} == "current" ]]; then
+        (
+        echo "ip link set ${device} up"
+        echo "ip addr add $(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }') dev ${device}"
+        echo "ip route add default via $(ip route list | grep default.*${device} | awk '{ print $3 }')"
+        ) > ${ifup}
+      else
+        (
+        echo "ip link set ${device} up"
+        echo "ip addr add ${ipdhcp} dev ${device}"
+        echo "ip route add default via ${gateway}"
+        ) > ${ifup}
+      fi
 
       spawn_chroot "rc-update del net.${device} boot"
       spawn_chroot "rc-update del net.${device} default"
