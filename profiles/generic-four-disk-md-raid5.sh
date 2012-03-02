@@ -1,4 +1,6 @@
-. profiles/base.sh
+. profiles/common/base.sh
+. profiles/common/md.sh
+. profiles/common/net-current-reboot.sh
 
 bootloader_install_device /dev/sda1
 bootloader_install_device /dev/sdb1
@@ -25,5 +27,3 @@ lvm_volgroup vg /dev/md2
 format /dev/md1 ext3
 
 mountfs /dev/md1 ext3 /
-
-extra_packages mdadm

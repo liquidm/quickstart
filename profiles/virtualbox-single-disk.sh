@@ -1,4 +1,4 @@
-. profiles/common.sh
+. profiles/common/base.sh
 
 bootloader_install_device /dev/sda1
 
@@ -10,5 +10,7 @@ lvm_volgroup vg /dev/sda2
 format /dev/sda1 ext3
 
 mountfs /dev/sda1 ext3 /
+
+net eth0 dhcp
 
 shutdown

@@ -1,5 +1,3 @@
-. profiles/common.sh
-
 net eth0 current
 
 reboot
