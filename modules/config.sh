@@ -291,8 +291,8 @@ sanity_check_config() {
     timezone=UTC
   fi
   if [ -z "${kernel_sources}" ]; then
-    debug sanity_check_config "kernel_sources not set...assuming vserver-sources"
-    kernel_sources="vserver-sources"
+    debug sanity_check_config "kernel_sources not set...assuming zentoo-sources"
+    kernel_sources="zentoo-sources"
   fi
   if [ -z "${logging_daemon}" ]; then
     debug sanity_check_config "logging_daemon not set...assuming syslog-ng"
