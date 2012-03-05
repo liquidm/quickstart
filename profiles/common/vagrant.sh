@@ -29,6 +29,9 @@ EOF
 
 	# compact disk image by zero filling unused space
 	for part in / /usr /var; do
-		spawn_chroot "cat /dev/zero > ${part}/zero.fill && sync && rm -f ${part}/zero.fill && sync"
+		spawn_chroot "cat /dev/zero > ${part}/zero.fill; sync; rm -f ${part}/zero.fill; sync"
 	done
+
+	# do not return with failure
+	true
 }
