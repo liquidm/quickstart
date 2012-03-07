@@ -1,13 +1,27 @@
+# this one is really ugly since it uses 'uname -r' for kernel detection and it
+# cannot be changed easily without breaking checksums, offsets and all kind of
+# nasty voodoo in the installer.
+#
+# to make it work we move a dummy uname script in place and revert it again
+# afterwards ... *sigh*
 install_guest_additions() {
 	cat <<"EOF" > ${chroot_dir}/tmp/vbox.sh
 emerge app-emulation/virtualbox-additions
 mount /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/
-cp /mnt/VBoxLinuxAdditions.run /tmp/VBoxLinuxAdditions.run
+
+mv /usr/bin/uname /usr/bin/uname.orig
+echo -e "#!/bin/bash\necho $(basename $(ls -1d /lib/modules/*))" > /usr/bin/uname
+chmod +x /usr/bin/uname
+
+/mnt/VBoxLinuxAdditions.run --nox11
+
+rm -f /usr/bin/uname
+mv /usr/bin/uname.orig /usr/bin/uname
+
 umount /mnt
 emerge -C app-emulation/virtualbox-additions
-sed -i -e "s/uname -r/echo $(basename $(ls -1d /lib/modules/*))/g" /tmp/VBoxLinuxAdditions.run
-/tmp/VBoxLinuxAdditions.run --nox11
-rm -f /tmp/VBoxLinuxAdditions.run /tmp/vbox.sh
+
+rm -f /tmp/vbox.sh
 EOF
 
 	spawn_chroot "bash /tmp/vbox.sh"
