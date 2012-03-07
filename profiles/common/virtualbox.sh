@@ -5,12 +5,25 @@
 # to make it work we move a dummy uname script in place and revert it again
 # afterwards ... *sigh*
 install_guest_additions() {
+	cat <<EOF > ${chroot_dir}/usr/bin/uname.vbox
+#!/bin/bash
+
+case $1 in
+	-r)
+		echo $(basename $(ls -1d /lib/modules/*))
+		;;
+	*)
+		/usr/bin/uname.orig "$@"
+		;;
+esac
+EOF
+
 	cat <<"EOF" > ${chroot_dir}/tmp/vbox.sh
 emerge app-emulation/virtualbox-additions
 mount /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/
 
 mv /usr/bin/uname /usr/bin/uname.orig
-echo -e "#!/bin/bash\necho $(basename $(ls -1d /lib/modules/*))" > /usr/bin/uname
+mv /usr/bin/uname.vbox /usr/bin/uname
 chmod +x /usr/bin/uname
 
 /mnt/VBoxLinuxAdditions.run --nox11
