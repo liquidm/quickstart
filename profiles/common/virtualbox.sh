@@ -5,7 +5,7 @@
 # to make it work we move a dummy uname script in place and revert it again
 # afterwards ... *sigh*
 install_guest_additions() {
-	cat <<EOF > ${chroot_dir}/usr/bin/uname.vbox
+	cat <<"EOF" > ${chroot_dir}/usr/bin/uname.vbox
 #!/bin/bash
 
 case $1 in
