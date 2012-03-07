@@ -12,8 +12,8 @@ case $1 in
 	-r)
 		echo $(basename $(ls -1d /lib/modules/*))
 		;;
-	*)
-		/usr/bin/uname.orig "$@"
+	-m)
+		echo x86_64
 		;;
 esac
 EOF
@@ -23,13 +23,16 @@ emerge app-emulation/virtualbox-additions
 mount /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/
 
 mv /usr/bin/uname /usr/bin/uname.orig
+mv /bin/uname /bin/uname.orig
+
+chmod +x /usr/bin/uname.vbox
 mv /usr/bin/uname.vbox /usr/bin/uname
-chmod +x /usr/bin/uname
+mv /usr/bin/uname.vbox /bin/uname
 
 /mnt/VBoxLinuxAdditions.run --nox11
 
-rm -f /usr/bin/uname
 mv /usr/bin/uname.orig /usr/bin/uname
+mv /bin/uname.orig /bin/uname
 
 umount /mnt
 emerge -C app-emulation/virtualbox-additions
