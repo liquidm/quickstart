@@ -1,4 +1,4 @@
-stage_uri http://www.zentoo.org/downloads/amd64/stage3-current.tar.bz2
+stage_uri http://www.zentoo.org/downloads/amd64/base-current.tar.bz2
 tree_type snapshot http://www.zentoo.org/downloads/snapshots/portage-current.tar.bz2
 mirror http://mirror.zentoo.org
 
