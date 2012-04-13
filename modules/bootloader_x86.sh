@@ -15,7 +15,8 @@ configure_bootloader_syslinux() {
 DEFAULT linux
 LABEL linux
   KERNEL /boot/kernel
-  APPEND root=${root}
+  INITRD /boot/initramfs
+  APPEND root=${root} ro quiet dolvm
 EOB
 
   if ! spawn_chroot "extlinux -i /boot/syslinux"; then
@@ -34,20 +35,22 @@ configure_bootloader_grub() {
   # Clear out any existing device.map for a "clean" start
   rm ${chroot_dir}/boot/grub/device.map &>/dev/null
 
-  echo -e "default 0\ntimeout 10\n" > ${chroot_dir}/boot/grub/grub.conf
+  echo -e "default 0" > ${chroot_dir}/boot/grub/grub.conf
+  echo -e "timeout 10" >> ${chroot_dir}/boot/grub/grub.conf
 
   for boot in ${bootloader_install_device}; do
     local boot_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
     local boot_minor="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f2)"
 
-    echo "title Gentoo Linux on ${boot_device}" >> ${chroot_dir}/boot/grub/grub.conf
+    echo -e "\ntitle Gentoo Linux on ${boot_device}" >> ${chroot_dir}/boot/grub/grub.conf
     local grub_device="$(map_device_to_grub_device ${boot_device})"
     if [ -z "${grub_device}" ]; then
       error "could not map boot device ${boot_device} to grub device"
       return 1
     fi
-    echo -en "root (${grub_device},$(expr ${boot_minor} - 1))\nkernel /boot/kernel " >> ${chroot_dir}/boot/grub/grub.conf
-    echo -e "root=${root}\n" >> ${chroot_dir}/boot/grub/grub.conf
+    echo -e "root (${grub_device},$(expr ${boot_minor} - 1))" >> ${chroot_dir}/boot/grub/grub.conf
+    echo -e "kernel /boot/kernel root=${root} ro quiet dolvm\n" >> ${chroot_dir}/boot/grub/grub.conf
+    echo -e "initrd /boot/initramfs\n" >> ${chroot_dir}/boot/grub/grub.conf
   done
 
   for boot in ${bootloader_install_device}; do
