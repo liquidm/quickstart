@@ -157,13 +157,9 @@ prepare_chroot() {
   debug prepare_chroot "bind-mounting /dev"
   spawn "mount -o bind /dev ${chroot_dir}/dev" || die "could not bind-mount /dev"
   echo "${chroot_dir}/dev" >> /tmp/install.umount
-  if [ "$(uname -r | cut -d. -f 2)" = "6" ]; then
-    debug prepare_chroot "bind-mounting /sys"
-    spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
-    echo "${chroot_dir}/sys" >> /tmp/install.umount
-  else
-    debug prepare_chroot "kernel is not 2.6...not bind-mounting /sys"
-  fi
+  debug prepare_chroot "bind-mounting /sys"
+  spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
+  echo "${chroot_dir}/sys" >> /tmp/install.umount
 }
 
 install_portage_tree() {
