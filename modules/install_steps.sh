@@ -163,6 +163,9 @@ prepare_chroot() {
 }
 
 install_portage_tree() {
+  if [ -n "${mirror}" ]; then
+    echo GENTOO_MIRRORS=\"${mirror}\" >> ${chroot_dir}/etc/make.conf
+  fi
   debug install_portage_tree "tree_type is ${tree_type}"
   if [ "${tree_type}" = "sync" ]; then
     spawn_chroot "emerge --sync" || die "could not sync portage tree"
@@ -181,9 +184,7 @@ install_portage_tree() {
   else
     die "Unrecognized tree_type: ${tree_type}"
   fi
-  if [ -n "${mirror}" ]; then
-    echo GENTOO_MIRRORS=\"${mirror}\" >> ${chroot_dir}/etc/make.conf
-  fi
+  spawn_chroot "emerge -1 dev-libs/openssl" || die "could not remerge openssl to get rid of bindist"
 }
 
 set_root_password() {
