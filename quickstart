@@ -162,12 +162,12 @@ notify "Install complete!"
 
 if [ "${shutdown}" = "yes" ]; then
   notify "Shutting down..."
-  /sbin/shutdown -h now &
+  /sbin/shutdown -h now
 fi
 
 if [ "${reboot}" = "yes" ]; then
   notify "Rebooting..."
-  /sbin/shutdown -r now &
+  /sbin/shutdown -r now
 fi
 
 exit 0
