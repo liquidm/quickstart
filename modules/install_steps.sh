@@ -51,6 +51,10 @@ setup_md_raid() {
 }
 
 setup_lvm() {
+  # make sure we have a writable /var/lock for LVM
+  mount -t tmpfs none /var/lock
+  echo "/var/lock" >> /tmp/install.umount
+
   for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
     local volgroup_temp="lvm_volgroup_${volgroup}"
     local volgroup_devices="$(eval echo \${${volgroup_temp}})"
