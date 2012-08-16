@@ -41,7 +41,7 @@ lvm_logvol() {
   local volgroup=$1
   local size=$2
   local name=$3
-  eval "lvm_logvol_${volgroup}_${name}=\"${size}\"
+  eval "lvm_logvol_${volgroup}_${name}=\"${size}\""
 }
 
 format() {
