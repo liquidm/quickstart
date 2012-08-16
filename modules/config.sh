@@ -41,13 +41,7 @@ lvm_logvol() {
   local volgroup=$1
   local size=$2
   local name=$3
-
-  local tmplogvol="${volgroup}|${size}|${name}"
-  if [ -n "${lvm_logvols}" ]; then
-    lvm_logvols="${lvm_logvols} ${tmplogvol}"
-  else
-    lvm_logvols="${tmplogvol}"
-  fi
+  eval "lvm_logvol_${volgroup}_${name}=\"${size}\"
 }
 
 format() {
