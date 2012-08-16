@@ -63,10 +63,11 @@ setup_lvm() {
     done
     spawn "vgcreate ${volgroup} ${volgroup_devices}" || die "could not create volume group '${volgroup}' from devices: ${volgroup_devices}"
   done
-  for logvol in ${lvm_logvols}; do
-    local volgroup="$(echo ${logvol} | cut -d '|' -f1)"
-    local size="$(echo ${logvol} | cut -d '|' -f2)"
-    local name="$(echo ${logvol} | cut -d '|' -f3)"
+
+  for logvol in $(set | grep '^lvm_logvol_' | cut -d= -f1 | sed -e 's:^lvm_logvol_::' | sort); do
+    local volgroup="$(echo ${logvol} | cut -d '_' -f1)"
+    local name="$(echo ${logvol} | cut -d '_' -f2)"
+    local size="$(eval echo \${lvm_logvol_${logvol}})"
     spawn "lvcreate -L${size} -n${name} ${volgroup}" || die "could not create logical volume '${name}' with size ${size} in volume group '${volgroup}'"
   done
 }
