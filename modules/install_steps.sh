@@ -51,6 +51,10 @@ setup_md_raid() {
 }
 
 setup_lvm() {
+  # make sure we have a writable /var/lock for LVM
+  mount -t tmpfs none /var/lock
+  echo "/var/lock" >> /tmp/install.umount
+
   for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
     local volgroup_temp="lvm_volgroup_${volgroup}"
     local volgroup_devices="$(eval echo \${${volgroup_temp}})"
@@ -157,16 +161,15 @@ prepare_chroot() {
   debug prepare_chroot "bind-mounting /dev"
   spawn "mount -o bind /dev ${chroot_dir}/dev" || die "could not bind-mount /dev"
   echo "${chroot_dir}/dev" >> /tmp/install.umount
-  if [ "$(uname -r | cut -d. -f 2)" = "6" ]; then
-    debug prepare_chroot "bind-mounting /sys"
-    spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
-    echo "${chroot_dir}/sys" >> /tmp/install.umount
-  else
-    debug prepare_chroot "kernel is not 2.6...not bind-mounting /sys"
-  fi
+  debug prepare_chroot "bind-mounting /sys"
+  spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
+  echo "${chroot_dir}/sys" >> /tmp/install.umount
 }
 
 install_portage_tree() {
+  if [ -n "${mirror}" ]; then
+    echo GENTOO_MIRRORS=\"${mirror}\" >> ${chroot_dir}/etc/make.conf
+  fi
   debug install_portage_tree "tree_type is ${tree_type}"
   if [ "${tree_type}" = "sync" ]; then
     spawn_chroot "emerge --sync" || die "could not sync portage tree"
@@ -185,9 +188,7 @@ install_portage_tree() {
   else
     die "Unrecognized tree_type: ${tree_type}"
   fi
-  if [ -n "${mirror}" ]; then
-    echo GENTOO_MIRRORS=\"${mirror}\" >> ${chroot_dir}/etc/make.conf
-  fi
+  spawn_chroot "emerge -1 dev-libs/openssl" || die "could not remerge openssl to get rid of bindist"
 }
 
 set_root_password() {

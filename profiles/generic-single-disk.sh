@@ -1,4 +1,5 @@
 . profiles/common/base.sh
+. profiles/common/extra-volumes.sh
 . profiles/common/net-current-reboot.sh
 
 bootloader_install_device /dev/sda1

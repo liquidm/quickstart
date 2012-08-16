@@ -1,4 +1,5 @@
 . profiles/common/base.sh
+. profiles/common/extra-volumes.sh
 . profiles/common/md.sh
 . profiles/common/net-current-reboot.sh
 
