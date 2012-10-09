@@ -12,8 +12,8 @@ part sda 2 fd00 2046G
 part sdb 1 fd00 1GB
 part sdb 2 fd00 2046G
 
-mdraid md1 --metadata=0.90 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1
-mdraid md2 --metadata=0.90 --level=1 --raid-devices=2 /dev/sda2 /dev/sdb2
+mdraid md1 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1
+mdraid md2 --level=1 --raid-devices=2 /dev/sda2 /dev/sdb2
 
 lvm_volgroup vg /dev/md2
 
