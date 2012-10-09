@@ -1,13 +1,3 @@
-map_device_to_grub_device() {
-  local device=$1
-
-  if [ ! -f "${chroot_dir}/boot/grub/device.map" ]; then
-    debug map_device_to_grub_device "device.map doesn't exist...creating"
-    spawn_chroot "echo quit | /sbin/grub --batch --no-floppy --device-map=/boot/grub/device.map >/dev/null 2>&1" || die "could not create grub device map"
-  fi
-  grep "${device}\$" ${chroot_dir}/boot/grub/device.map | awk '{ print $1; }' | sed -e 's:[()]::g'
-}
-
 get_boot_and_root() {
   for mount in ${localmounts}; do
     local devnode=$(echo ${mount} | cut -d ':' -f1)
@@ -22,12 +12,6 @@ get_boot_and_root() {
     local boot="${root}"
   fi
   echo "${boot}|${root}"
-}
-
-get_device_and_partition_from_devnode() {
-  local devnode=$1
-
-  echo ${devnode} | sed -e 's:p\?\([0-9]\+\)$:|\1:'
 }
 
 sanity_check_config_bootloader() {

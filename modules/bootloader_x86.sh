@@ -30,35 +30,9 @@ EOB
 }
 
 configure_bootloader_grub() {
-  local root="$(get_boot_and_root | cut -d '|' -f2)"
-
-  # Clear out any existing device.map for a "clean" start
-  rm ${chroot_dir}/boot/grub/device.map &>/dev/null
-
-  echo -e "default 0" > ${chroot_dir}/boot/grub/grub.conf
-  echo -e "timeout 10" >> ${chroot_dir}/boot/grub/grub.conf
-
-  for boot in ${bootloader_install_device}; do
-    local boot_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
-    local boot_minor="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f2)"
-
-    echo -e "\ntitle Gentoo Linux on ${boot_device}" >> ${chroot_dir}/boot/grub/grub.conf
-    local grub_device="$(map_device_to_grub_device ${boot_device})"
-    if [ -z "${grub_device}" ]; then
-      error "could not map boot device ${boot_device} to grub device"
-      return 1
-    fi
-    echo -e "root (${grub_device},$(expr ${boot_minor} - 1))" >> ${chroot_dir}/boot/grub/grub.conf
-    echo -e "kernel /boot/kernel root=${root} ro quiet dolvm\n" >> ${chroot_dir}/boot/grub/grub.conf
-    echo -e "initrd /boot/initramfs\n" >> ${chroot_dir}/boot/grub/grub.conf
-  done
-
-  for boot in ${bootloader_install_device}; do
-    local boot_device="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f1)"
-    local boot_minor="$(get_device_and_partition_from_devnode ${boot} | cut -d '|' -f2)"
-    local grub_device="$(map_device_to_grub_device ${boot_device})"
-    if ! spawn_chroot "echo 'root (${grub_device},$(expr ${boot_minor} - 1))\nsetup (${grub_device})\nquit' | /sbin/grub --batch --no-floppy"; then
-      error "could not install grub to ${boot_device}"
+  for device in ${bootloader_install_device}; do
+    if ! spawn_chroot "grub2-install ${device}"; then
+      error "could not install grub to ${device}"
       return 1
     fi
   done
