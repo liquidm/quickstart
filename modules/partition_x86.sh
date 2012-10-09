@@ -5,9 +5,7 @@ create_disklabel() {
   gdisk_command ${device} "o\ny"
 
   # add bios boot partition for good measure
-  for device in ${bootloader_install_device}; do
-    gdisk_command ${device} "n\n128\n-32M\n\nef02\n"
-  done
+  gdisk_command ${device} "n\n128\n-32M\n\nef02\n"
 
   return $?
 }
