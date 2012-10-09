@@ -6,7 +6,7 @@ create_disklabel() {
 
   # add bios boot partition for good measure
   for device in ${bootloader_install_device}; do
-    add_partition ${device} 0 ef02 32M
+    gdisk_command ${device} "n\n128\n-32M\n\nef02\n"
   done
 
   return $?
@@ -14,7 +14,7 @@ create_disklabel() {
 
 add_partition() {
   local device=$1
-  local minor=$(($2 + 1))
+  local minor=$2
   local type=$3
   local size=$4
 
