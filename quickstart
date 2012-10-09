@@ -136,9 +136,10 @@ runstep mount_local_partitions "Mounting local partitions"
 runstep mount_network_shares "Mounting network shares"
 runstep unpack_stage_tarball "Fetching and unpacking stage tarball"
 runstep prepare_chroot "Preparing chroot"
+runstep install_portage_tree "Installing portage tree"
+runstep install_extra_packages "Installing extra packages"
 
 if [ "${install_mode}" != "stage4" ]; then
-  runstep install_portage_tree "Installing portage tree"
   runstep set_root_password "Setting root password"
   runstep set_timezone "Setting timezone"
   runstep setup_fstab "Setting up /etc/fstab"
@@ -153,7 +154,6 @@ if [ "${install_mode}" != "chroot" ]; then
   runstep configure_bootloader "Configuring bootloader"
 fi
 
-runstep install_extra_packages "Installing extra packages"
 runstep add_and_remove_services "Adding and removing services"
 runstep run_post_install_script "Running post-install script"
 runstep finishing_cleanup "Cleaning up"
