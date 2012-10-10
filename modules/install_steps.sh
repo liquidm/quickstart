@@ -243,6 +243,7 @@ setup_fstab() {
     local mountpoint=$(echo ${mount} | cut -d ':' -f3)
     local mountopts=$(echo ${mount} | cut -d ':' -f4)
     if [ "${mountpoint}" == "/" ]; then
+      devnode="/dev/root"
       local dump_pass="0 1"
     elif [ "${mountpoint}" == "/boot" -o "${mountpoint}" == "/boot/" ]; then
       local dump_pass="1 2"
