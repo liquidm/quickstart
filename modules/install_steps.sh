@@ -16,24 +16,13 @@ partition() {
     debug partition "device is ${device}"
     local device_temp="partitions_${device}"
     local device="/dev/$(echo "${device}" | sed  -e 's:_:/:g')"
-    local device_size="$(get_device_size_in_mb ${device})"
     create_disklabel ${device} || die "could not create disklabel for device ${device}"
     for partition in $(eval echo \${${device_temp}}); do
       debug partition "partition is ${partition}"
       local minor=$(echo ${partition} | cut -d: -f1)
       local type=$(echo ${partition} | cut -d: -f2)
       local size=$(echo ${partition} | cut -d: -f3)
-      local devnode=$(format_devnode "${device}" "${minor}")
-      debug partition "devnode is ${devnode}"
-      if [ "${type}" = "extended" ]; then
-        newsize="${device_size}"
-      else
-        size_devicesize="$(human_size_to_mb ${size} ${device_size})"
-        newsize="$(echo ${size_devicesize} | cut -d '|' -f1)"
-        [ "${newsize}" = "-1" ] && die "could not translate size '${size}' to a usable value"
-        device_size="$(echo ${size_devicesize} | cut -d '|' -f2)"
-      fi
-      add_partition "${device}" "${minor}" "${newsize}" "${type}" || die "could not add partition ${minor} to device ${device}"
+      add_partition "${device}" "${minor}" "${type}" "${size}" || die "could not add partition ${minor} to device ${device}"
     done
   done
 }
@@ -177,6 +166,7 @@ install_portage_tree() {
   elif [ "${tree_type}" = "snapshot" ]; then
     fetch "${portage_snapshot_uri}" "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" || die "could not fetch portage snapshot"
     unpack_tarball "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" "${chroot_dir}/usr" || die "could not unpack portage snapshot"
+    spawn_chroot "emerge --sync" || die "could not sync portage tree"
   elif [ "${tree_type}" = "webrsync" ]; then
     spawn_chroot "emerge-webrsync" || die "could not emerge-webrsync"
   elif [ "${tree_type}" = "git-snapshot" ]; then

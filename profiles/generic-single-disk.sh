@@ -2,10 +2,10 @@
 . profiles/common/extra-volumes.sh
 . profiles/common/net-current-reboot.sh
 
-bootloader_install_device /dev/sda1
+bootloader_install_device /dev/sda
 
-part sda 1 fd 1GB
-part sda 2 fd +
+part sda 1 fd00 1G
+part sda 2 fd00
 
 lvm_volgroup vg /dev/sda2
 
