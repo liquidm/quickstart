@@ -30,8 +30,10 @@ EOB
 }
 
 configure_bootloader_grub() {
+  spawn_chroot "sed -e '/^GRUB_CMDLINE_LINUX=/s/=.*/=\"domdadm dolvm\"/' /etc/default/grub" || die "cannot fix grub defaults"
   spawn_chroot "mkdir -p /boot/grub2" || die "cannot create /boot/grub2"
   spawn_chroot "grub2-mkconfig -o /boot/grub2/grub.cfg" || die "cannot create grub.cfg"
+
   for device in ${bootloader_install_device}; do
     if ! spawn_chroot "grub2-install ${device}"; then
       error "could not install grub to ${device}"
