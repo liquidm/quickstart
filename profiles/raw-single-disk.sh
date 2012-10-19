@@ -4,8 +4,8 @@
 
 bootloader_install_device /dev/sdc
 
-part sda 1 fd00 1G
-part sda 2 fd00
+part sdc 1 fd00 1G
+part sdc 2 fd00
 
 lvm_volgroup vg /dev/sdc2
 
