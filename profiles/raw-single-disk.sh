@@ -7,8 +7,8 @@ bootloader_install_device /dev/sdc
 part sda 1 fd00 1G
 part sda 2 fd00
 
-lvm_volgroup vg /dev/sda2
+lvm_volgroup vg /dev/sdc2
 
-format /dev/sda1 ext3
+format /dev/sdc1 ext3
 
-mountfs /dev/sda1 ext3 /
+mountfs /dev/sdc1 ext3 /
