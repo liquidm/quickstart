@@ -23,4 +23,3 @@ rcadd devfs sysinit
 rcadd udev sysinit
 rcadd lvm boot
 rcadd sshd default
-rcadd udev-postmount default
