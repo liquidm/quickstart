@@ -1,12 +1,12 @@
-stage_uri http://www.zentoo.org/downloads/amd64/base-current.tar.bz2
-tree_type snapshot http://www.zentoo.org/downloads/snapshots/portage-current.tar.bz2
-mirror http://mirror.zentoo.org rsync://rsync.zentoo.org/zentoo-portage
+stage_uri http://next.zentoo.org/downloads/amd64/base-current.tar.bz2
+tree_type snapshot http://next.zentoo.org/downloads/snapshots/portage-current.tar.bz2
+mirror http://mirror.zentoo.org rsync://rsync.zentoo.org/zentoo-portage-next
 
 rootpw tux
 timezone Europe/Berlin
 
 kernel_sources zentoo-sources
-kernel_config_uri https://raw.github.com/zentoo/quickstart/master/profiles/3.7.1-zentoo-generic.kconfig
+kernel_config_uri https://raw.github.com/zentoo/quickstart/next/profiles/3.7.1-zentoo-generic.kconfig
 
 lvm_logvol vg 10G usr
 lvm_logvol vg 10G var
