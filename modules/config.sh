@@ -134,7 +134,8 @@ tree_type() {
 }
 
 mirror() {
-  mirror=$1
+  distfiles_mirror=$1
+  portage_mirror=$2
 }
 
 bootloader_install_device() {

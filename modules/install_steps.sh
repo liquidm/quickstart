@@ -157,8 +157,11 @@ prepare_chroot() {
 }
 
 install_portage_tree() {
-  if [ -n "${mirror}" ]; then
-    echo GENTOO_MIRRORS=\"${mirror}\" >> ${chroot_dir}/etc/make.conf
+  if [ -n "${distfiles_mirror}" ]; then
+    echo GENTOO_MIRRORS=\"${distfiles_mirror}\" >> ${chroot_dir}/etc/portage/make.conf
+  fi
+  if [ -n "${portage_mirror}" ]; then
+    echo SYNC=\"${portage_mirror}\" >> ${chroot_dir}/etc/portage/make.conf
   fi
   debug install_portage_tree "tree_type is ${tree_type}"
   if [ "${tree_type}" = "sync" ]; then
