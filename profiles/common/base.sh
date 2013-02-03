@@ -23,3 +23,14 @@ rcadd devfs sysinit
 rcadd udev sysinit
 rcadd lvm boot
 rcadd sshd default
+
+set_clock() {
+	notify "Setting the system clock"
+	spawn "/etc/init.d/ntp stop" || :
+	spawn "ntpdate pool.ntp.org" || :
+	spawn "hwclock --systohc" || :
+}
+
+pre_install() {
+	set_clock
+}
