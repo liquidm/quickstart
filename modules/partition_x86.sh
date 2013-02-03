@@ -19,3 +19,13 @@ add_partition() {
   gdisk_command ${device} "n\n${minor}\n\n+${size}\n${type}\n"
   return $?
 }
+
+convert_to_mbr() {
+  local device=$1
+  gdisk_command ${device} "r\ng"
+
+  partprobe
+
+  debug gdisk_command "sleeping 3 seconds after partprobe"
+  sleep 3
+}
