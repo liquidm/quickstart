@@ -15,12 +15,3 @@ mountfs /dev/sda1 ext3 /
 net eth0 dhcp
 
 shutdown
-
-post_install() {
-	install_guest_additions
-	compact_with_cleanup
-	compact_with_zero_fill
-
-	# do not return with failure
-	true
-}

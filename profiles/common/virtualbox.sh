@@ -31,3 +31,12 @@ compact_with_zero_fill() {
 		spawn_chroot "cat /dev/zero > ${part}/zero.fill; sync; rm -f ${part}/zero.fill; sync"
 	done
 }
+
+post_install() {
+	install_guest_additions
+	compact_with_cleanup
+	compact_with_zero_fill
+
+	# do not return with failure
+	true
+}

@@ -15,3 +15,13 @@ root    ALL = (ALL) ALL
 %wheel  ALL = (ALL) NOPASSWD: ALL
 EOF
 }
+
+post_install() {
+	vagrant_post_install
+	install_guest_additions
+	compact_with_cleanup
+	compact_with_zero_fill
+
+	# do not return with failure
+	true
+}
