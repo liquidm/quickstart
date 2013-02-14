@@ -29,6 +29,10 @@ part - Creates a partition
             (these should only be used after all specific partition sizes are
             specified), leave blank for "extended"
 
+need_mbr - Convert GPT partition table to MBR for legacy systems
+
+  Usage:
+    need_mbr
 
 mdraid - Creates a md raid array
 
@@ -164,13 +168,14 @@ tree_type - Specifies the portage tree type (defaults to sync)
            'snapshot' for the type
 
 
-mirror - Specifies the distfiles mirror (default is empty)
+mirror - Specifies the distfiles and portage mirror (default is empty)
 
   Usage:
-    mirror <uri>
+    mirror <distfiles-uri> <portage-uri>
 
   Parameters:
-    uri  - URI to the location of the distfiles mirror
+    distfiles-uri  - URI to the location of the distfiles mirror
+    portage-uri    - URI to the location of the portage mirror
 
 
 bootloader_install_device - Specifies the device to install the bootloader to

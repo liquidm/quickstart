@@ -21,6 +21,10 @@ part() {
   debug part "${drive_temp} is now: $(eval echo \${${drive_temp}})"
 }
 
+need_mbr() {
+  need_mbr="yes"
+}
+
 mdraid() {
   local array=$1
   shift
@@ -134,7 +138,8 @@ tree_type() {
 }
 
 mirror() {
-  mirror=$1
+  distfiles_mirror=$1
+  portage_mirror=$2
 }
 
 bootloader_install_device() {
