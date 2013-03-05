@@ -1,8 +1,6 @@
 . profiles/common/base.sh
 . profiles/common/virtualbox.sh
 
-bootloader_install_device /dev/sda
-
 part sda 1 fd00 1G
 part sda 2 fd00
 

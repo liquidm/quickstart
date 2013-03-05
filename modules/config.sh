@@ -91,12 +91,6 @@ netmount() {
   fi
 }  
 
-bootloader() {
-  local pkg=$1
-
-  bootloader="${pkg}"
-}
-
 logger() {
   local pkg=$1
 
@@ -142,16 +136,6 @@ mirror() {
   portage_mirror=$2
 }
 
-bootloader_install_device() {
-  local device=$1
-
-  if [ -n "${bootloader_install_device}" ]; then
-    bootloader_install_device="${bootloader_install_device} ${device}"
-  else
-    bootloader_install_device="${device}"
-  fi
-}
-
 chroot_dir() {
   local dir=$1
 
@@ -180,10 +164,10 @@ kernel_config_uri() {
   kernel_config_uri="${uri}"
 }
 
-kernel_sources() {
+kernel_image() {
   local pkg=$1
 
-  kernel_sources="${pkg}"
+  kernel_image="${pkg}"
 }
 
 timezone() {
@@ -289,10 +273,6 @@ sanity_check_config() {
     warn "timezone not set...assuming UTC"
     timezone=UTC
   fi
-  if [ -z "${kernel_sources}" ]; then
-    debug sanity_check_config "kernel_sources not set...assuming zentoo-sources"
-    kernel_sources="zentoo-sources"
-  fi
   if [ -z "${logging_daemon}" ]; then
     debug sanity_check_config "logging_daemon not set...assuming syslog-ng"
     logging_daemon="syslog-ng"
@@ -300,10 +280,6 @@ sanity_check_config() {
   if [ -z "${cron_daemon}" ]; then
     debug sanity_check_config "cron_daemon not set...assuming dcron"
     cron_daemon="dcron"
-  fi
-
-  if ! sanity_check_config_bootloader; then
-    fatal=1
   fi
 
   debug sanity_check_config "$(set | grep '^[a-z]')"

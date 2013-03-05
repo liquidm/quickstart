@@ -1,5 +1,3 @@
-bootloader none
-
 need_mbr
 
 net eth0 dhcp

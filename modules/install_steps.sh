@@ -207,19 +207,12 @@ set_timezone() {
   fi
 }
 
-build_kernel() {
-  if [ "${kernel_sources}" = "none" ]; then
-    debug build_kernel "kernel_sources is 'none'...skipping kernel build"
+install_kernel() {
+  if [ "${kernel_image}" = "none" ]; then
+    debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
-    spawn_chroot "emerge -n ${kernel_sources}" || die "could not emerge kernel sources"
-    spawn_chroot "emerge -n genkernel" || die "could not emerge genkernel"
-    if [ -n "${kernel_config_uri}" ]; then
-      fetch "${kernel_config_uri}" "${chroot_dir}/tmp/kconfig" || die "could not fetch kernel config"
-      local opts="--no-ramdisk-modules --no-splash --no-keymap --lvm --mdadm ${genkernel_opts}"
-      spawn_chroot "genkernel --kernel-config=/tmp/kconfig --install --symlink ${opts} all" || die "could not build custom kernel"
-    else
-      debug build_kernel "no kernel_config_uri ...skipping kernel build"
-    fi
+    spawn_chroot "emerge -n ${kernel_image}" || die "could not emerge kernel sources"
+    spawn_chroot "emerge --config ${kernel_image}" || die "could not install bootloader"
   fi
 }
 
@@ -320,26 +313,6 @@ add_and_remove_services() {
       runlevel="$(echo ${service_del} | cut -d '|' -f2)"
       spawn_chroot "rc-update del ${service} ${runlevel}"
     done
-  fi
-}
-
-install_bootloader() {
-  if [ "${bootloader}" = "none" ]; then
-    debug install_bootloader "bootloader is 'none'...skipping"
-  else
-    spawn_chroot "emerge -n ${bootloader}" || die "could not emerge bootloader"
-  fi
-}
-
-configure_bootloader() {
-  if [ "${bootloader}" = "none" ]; then
-    debug configure_bootloader "bootloader is 'none'...skipping configuration"
-  else
-    if $(isafunc configure_bootloader_${bootloader}); then
-      configure_bootloader_${bootloader} || die "could not configure bootloader ${bootloader}"
-    else
-      die "I don't know how to configure ${bootloader}"
-    fi
   fi
 }
 

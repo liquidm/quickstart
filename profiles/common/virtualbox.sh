@@ -21,7 +21,6 @@ EOF
 }
 
 compact_with_cleanup() {
-	spawn_chroot "emerge -C ${kernel_sources}"
 	spawn_chroot "rm -rf /usr/src/linux-* /var/cache/genkernel"
 	spawn_chroot "rm -rf /usr/portage/distfiles/* /usr/portage/packages/*"
 }

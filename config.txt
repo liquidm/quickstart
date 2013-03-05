@@ -100,16 +100,7 @@ netmount - Mounts a network filesystem
     mountopts  - additional options to use when mounting
 
 
-bootloader - Specify the bootloader to use (defaults to grub)
-
-  Usage:
-    bootloader <bootloader>
-
-  Parameters:
-    bootloader - the name of the bootloader to use (such as grub or lilo)
-
-
-logger - Specify the bootloader to use (defaults to syslog-ng)
+logger - Specify the logger to use (defaults to syslog-ng)
 
   Usage:
     logger <logger>
@@ -178,16 +169,6 @@ mirror - Specifies the distfiles and portage mirror (default is empty)
     portage-uri    - URI to the location of the portage mirror
 
 
-bootloader_install_device - Specifies the device to install the bootloader to
-                            (defaults to MBR of device /boot is on)
-
-  Usage:
-    bootloader_install_device <device>
-
-  Parameters:
-    device - device to install bootloader to (such as /dev/hda, /dev/hda3, etc.)
-
-
 chroot_dir - Specifies the directory to use for the chroot (defaults to
              /mnt/gentoo)
 
@@ -225,11 +206,11 @@ kernel_config_uri - Specifies the URI to a custom kernel config
     uri - URI to the location of the custom kernel config
 
 
-kernel_sources - Specifies the kernel sources to use (defaults to
+kernel_image - Specifies the kernel sources to use (defaults to
                  gentoo-sources)
 
   Usage:
-    kernel_sources <source>
+    kernel_image <source>
 
   Parameters:
     source - kernel sources to emerge
