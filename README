@@ -33,9 +33,6 @@ Features
     * ability to format partitions as ext2, ext3, swap, reiserfs, xfs, or jfs
     * specify local filesystems to be mounted during the install
     * specify network shares to be mounted during the install
-    * choose your bootloader
-    * automatic bootloader configuration (currently grub, palo, and silo)
-    * specify device bootloader is installed to
     * choose your logger (or none)
     * choose your cron daemon (or none)
     * choose your root password (plain-text or pre-encrypted)

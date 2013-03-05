@@ -5,8 +5,7 @@ mirror http://mirror.zentoo.org rsync://rsync.zentoo.org/zentoo-portage
 rootpw tux
 timezone Europe/Berlin
 
-kernel_sources zentoo-sources
-kernel_config_uri https://raw.github.com/zentoo/kernels/master/config-3.7.7-zentoo
+kernel_image sys-kernel/zentoo-image
 
 lvm_logvol vg 10G usr
 lvm_logvol vg 10G var
@@ -17,7 +16,7 @@ format /dev/vg/var xfs
 mountfs /dev/vg/usr xfs /usr noatime
 mountfs /dev/vg/var xfs /var noatime
 
-extra_packages lvm2 xfsprogs
+extra_packages lvm2 xfsprogs zentoo-image
 
 rcadd devfs sysinit
 rcadd udev sysinit
