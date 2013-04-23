@@ -80,9 +80,6 @@ format_devices() {
       xfs)
         formatcmd="mkfs.${fs} -f ${devnode}"
         ;;
-      reiserfs|reiserfs3)
-        formatcmd="mkreiserfs -q ${devnode}"
-        ;;
       *)
         formatcmd=""
         warn "don't know how to format ${devnode} as ${fs}"
@@ -93,13 +90,13 @@ format_devices() {
   done
 }
 
-mount_local_partitions() {
+mount_partitions() {
   if [ -z "${localmounts}" ]; then
     warn "no local mounts specified. this is a bit unusual, but you're the boss"
   else
     rm /tmp/install.mount /tmp/install.umount /tmp/install.swapoff 2>/dev/null
     for mount in ${localmounts}; do
-      debug mount_local_partitions "mount is ${mount}"
+      debug mount_partitions "mount is ${mount}"
       local devnode=$(echo ${mount} | cut -d ':' -f1)
       local type=$(echo ${mount} | cut -d ':' -f2)
       local mountpoint=$(echo ${mount} | cut -d ':' -f3)
@@ -110,7 +107,7 @@ mount_local_partitions() {
           spawn "swapon ${devnode}" || warn "could not activate swap ${devnode}"
           echo "${devnode}" >> /tmp/install.swapoff
           ;;
-        ext2|ext3|ext4|reiserfs|reiserfs3|xfs|btrfs)
+        ext2|ext3|ext4|xfs|btrfs)
           echo "mount -t ${type} ${devnode} ${chroot_dir}${mountpoint} ${mountopts}" >> /tmp/install.mount
           echo "${chroot_dir}${mountpoint}" >> /tmp/install.umount
           ;;
@@ -182,11 +179,7 @@ set_root_password() {
 set_timezone() {
   [ -e "${chroot_dir}/etc/localtime" ] && spawn "rm ${chroot_dir}/etc/localtime" || die "could not remove existing /etc/localtime"
   spawn "cp ${chroot_dir}/usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime" || die "could not set timezone"
-  if [ -e "${chroot_dir}/etc/conf.d/clock" ]; then
-    spawn "/bin/sed -i 's:#TIMEZONE=\"Factory\":TIMEZONE=\"${timezone}\":' ${chroot_dir}/etc/conf.d/clock" || die "could not adjust TIMEZONE config in /etc/conf.d/clock"
-  else
-    echo "${timezone}" > "${chroot_dir}/etc/timezone"
-  fi
+  echo "${timezone}" > "${chroot_dir}/etc/timezone"
 }
 
 install_kernel() {
