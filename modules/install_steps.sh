@@ -77,9 +77,6 @@ format_devices() {
       ext2|ext3|ext4|xfs|btrfs)
         formatcmd="mkfs.${fs} ${devnode}"
         ;;
-      reiserfs|reiserfs3)
-        formatcmd="mkreiserfs -q ${devnode}"
-        ;;
       *)
         formatcmd=""
         warn "don't know how to format ${devnode} as ${fs}"
@@ -90,13 +87,13 @@ format_devices() {
   done
 }
 
-mount_local_partitions() {
+mount_partitions() {
   if [ -z "${localmounts}" ]; then
     warn "no local mounts specified. this is a bit unusual, but you're the boss"
   else
     rm /tmp/install.mount /tmp/install.umount /tmp/install.swapoff 2>/dev/null
     for mount in ${localmounts}; do
-      debug mount_local_partitions "mount is ${mount}"
+      debug mount_partitions "mount is ${mount}"
       local devnode=$(echo ${mount} | cut -d ':' -f1)
       local type=$(echo ${mount} | cut -d ':' -f2)
       local mountpoint=$(echo ${mount} | cut -d ':' -f3)
@@ -107,7 +104,7 @@ mount_local_partitions() {
           spawn "swapon ${devnode}" || warn "could not activate swap ${devnode}"
           echo "${devnode}" >> /tmp/install.swapoff
           ;;
-        ext2|ext3|ext4|reiserfs|reiserfs3|xfs|btrfs)
+        ext2|ext3|ext4|xfs|btrfs)
           echo "mount -t ${type} ${devnode} ${chroot_dir}${mountpoint} ${mountopts}" >> /tmp/install.mount
           echo "${chroot_dir}${mountpoint}" >> /tmp/install.umount
           ;;
@@ -116,27 +113,6 @@ mount_local_partitions() {
     sort -k5 /tmp/install.mount | while read mount; do
       mkdir -p $(echo ${mount} | awk '{ print $5; }')
       spawn "${mount}" || die "could not mount with: ${mount}"
-    done
-  fi
-}
-
-mount_network_shares() {
-  if [ -n "${netmounts}" ]; then
-    for mount in ${netmounts}; do
-      local export=$(echo ${mount} | cut -d '|' -f1)
-      local type=$(echo ${mount} | cut -d '|' -f2)
-      local mountpoint=$(echo ${mount} | cut -d '|' -f3)
-      local mountopts=$(echo ${mount} | cut -d '|' -f4)
-      [ -n "${mountopts}" ] && mountopts="-o ${mountopts}"
-      case "${type}" in
-        nfs)
-          spawn "/etc/init.d/nfsmount start"
-          mkdir -p ${chroot_dir}${mountpoint}
-          spawn "mount -t nfs ${mountopts} ${export} ${chroot_dir}${mountpoint}" || die "could not mount ${type}/${export}"
-          ;;
-        *)
-          warn "mounting ${type} is not currently supported"
-      esac
     done
   fi
 }
@@ -200,11 +176,7 @@ set_root_password() {
 set_timezone() {
   [ -e "${chroot_dir}/etc/localtime" ] && spawn "rm ${chroot_dir}/etc/localtime" || die "could not remove existing /etc/localtime"
   spawn "cp ${chroot_dir}/usr/share/zoneinfo/${timezone} ${chroot_dir}/etc/localtime" || die "could not set timezone"
-  if [ -e "${chroot_dir}/etc/conf.d/clock" ]; then
-    spawn "/bin/sed -i 's:#TIMEZONE=\"Factory\":TIMEZONE=\"${timezone}\":' ${chroot_dir}/etc/conf.d/clock" || die "could not adjust TIMEZONE config in /etc/conf.d/clock"
-  else
-    echo "${timezone}" > "${chroot_dir}/etc/timezone"
-  fi
+  echo "${timezone}" > "${chroot_dir}/etc/timezone"
 }
 
 install_kernel() {
@@ -213,15 +185,6 @@ install_kernel() {
   else
     spawn_chroot "emerge -n ${kernel_image}" || die "could not emerge kernel sources"
     spawn_chroot "emerge --config ${kernel_image}" || die "could not install bootloader"
-  fi
-}
-
-install_logging_daemon() {
-  if [ "${logging_daemon}" = "none" ]; then
-    debug install_logging_daemon "logging_daemon is 'none'...skipping"
-  else
-    spawn_chroot "emerge -n ${logging_daemon}" || die "could not emerge logging daemon"
-    spawn_chroot "rc-update add ${logging_daemon} default" || die "could not add logging daemon to default runlevel"
   fi
 }
 
