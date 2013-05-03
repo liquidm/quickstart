@@ -45,7 +45,6 @@ import output
 import misc
 import spawn
 import fetcher
-import portage
 import partition
 import install_steps
 import config
