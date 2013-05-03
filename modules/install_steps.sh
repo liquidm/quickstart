@@ -74,7 +74,10 @@ format_devices() {
       swap)
         formatcmd="mkswap ${devnode}"
         ;;
-      ext2|ext3|ext4|xfs|btrfs)
+      ext2|ext3|ext4)
+        formatcmd="mkfs.${fs} -F ${devnode}"
+        ;;
+      xfs)
         formatcmd="mkfs.${fs} -f ${devnode}"
         ;;
       reiserfs|reiserfs3)
