@@ -3,14 +3,6 @@
 . profiles/common/md.sh
 . profiles/common/net-current-reboot.sh
 
-bootloader_install_device /dev/sda
-bootloader_install_device /dev/sdb
-bootloader_install_device /dev/sdc
-bootloader_install_device /dev/sdd
-bootloader_install_device /dev/sde
-bootloader_install_device /dev/sdf
-bootloader_install_device /dev/sdg
-
 part sda 1 fd00 1G
 part sda 2 fd00
 
