@@ -75,7 +75,7 @@ format_devices() {
         formatcmd="mkswap ${devnode}"
         ;;
       ext2|ext3|ext4|xfs|btrfs)
-        formatcmd="mkfs.${fs} ${devnode}"
+        formatcmd="mkfs.${fs} -f ${devnode}"
         ;;
       *)
         formatcmd=""
