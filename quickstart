@@ -140,7 +140,6 @@ if [ "${install_mode}" != "stage4" ]; then
   runstep set_root_password "Setting root password"
   runstep set_timezone "Setting timezone"
   runstep setup_fstab "Setting up /etc/fstab"
-  runstep install_cron_daemon "Installing cron daemon"
   runstep setup_network_post "Setting up post-install networking"
   runstep install_kernel "Installing kernel"
 fi

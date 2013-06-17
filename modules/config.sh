@@ -91,18 +91,6 @@ netmount() {
   fi
 }  
 
-logger() {
-  local pkg=$1
-
-  logging_daemon="${pkg}"
-}
-
-cron() {
-  local pkg=$1
-
-  cron_daemon="${pkg}"
-}
-
 rootpw() {
   local pass=$1
 
@@ -174,30 +162,6 @@ timezone() {
   local tz=$1
 
   timezone="${tz}"
-}
-
-rcadd() {
-  local service=$1
-  local runlevel=$2
-
-  local tmprcadd="${service}|${runlevel}"
-  if [ -n "${services_add}" ]; then
-    services_add="${services_add} ${tmprcadd}"
-  else
-    services_add="${tmprcadd}"
-  fi
-}
-
-rcdel() {
-  local service=$1
-  local runlevel=$2
-
-  local tmprcdel="${service}|${runlevel}"
-  if [ -n "${services_del}" ]; then
-    services_del="${services_del} ${tmprcdel}"
-  else
-    services_del="${tmprcdel}"
-  fi
 }
 
 net() {
@@ -272,14 +236,6 @@ sanity_check_config() {
   if [ -z "${timezone}" ]; then
     warn "timezone not set...assuming UTC"
     timezone=UTC
-  fi
-  if [ -z "${logging_daemon}" ]; then
-    debug sanity_check_config "logging_daemon not set...assuming syslog-ng"
-    logging_daemon="syslog-ng"
-  fi
-  if [ -z "${cron_daemon}" ]; then
-    debug sanity_check_config "cron_daemon not set...assuming dcron"
-    cron_daemon="dcron"
   fi
 
   debug sanity_check_config "$(set | grep '^[a-z]')"

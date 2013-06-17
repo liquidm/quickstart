@@ -18,11 +18,6 @@ mountfs /dev/vg/var xfs /var noatime
 
 extra_packages lvm2 xfsprogs zentoo-image
 
-rcadd devfs sysinit
-rcadd udev sysinit
-rcadd lvm boot
-rcadd sshd default
-
 set_clock() {
 	notify "Setting the system clock"
 	spawn "/etc/init.d/ntp stop" || :

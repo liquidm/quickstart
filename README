@@ -33,8 +33,6 @@ Features
     * ability to format partitions as ext2, ext3, swap, reiserfs, xfs, or jfs
     * specify local filesystems to be mounted during the install
     * specify network shares to be mounted during the install
-    * choose your logger (or none)
-    * choose your cron daemon (or none)
     * choose your root password (plain-text or pre-encrypted)
     * specify URI for stage 3 tarball (file, http, https, ftp, or rsync)
     * specify method for getting a portage tree (sync, webrsync, or snapshot)
