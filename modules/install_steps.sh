@@ -165,7 +165,6 @@ install_portage_tree() {
   else
     die "Unrecognized tree_type: ${tree_type}"
   fi
-  spawn_chroot "emerge -1 dev-libs/openssl" || die "could not remerge openssl to get rid of bindist"
 }
 
 set_root_password() {
@@ -224,7 +223,7 @@ setup_network_post() {
     for net_device in ${net_devices}; do
       local device="$(echo ${net_device} | cut -d '|' -f1)"
       local netctl=${chroot_dir}/etc/netctl/${device}
-      local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
+      local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
       local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
 
       cat > ${netctl} << EOF
@@ -239,9 +238,11 @@ Gateway='${gateway}'
 DNS=('8.8.8.8' '8.8.4.4')
 EOF
 
-      spawn_chroot "systemctl enable netctl@${device}"
+      spawn_chroot "netctl enable ${device}"
     done
   fi
+  spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules"
+  spawn_chroot "systemctl enable sshd.service"
 }
 
 install_extra_packages() {

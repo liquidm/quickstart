@@ -144,7 +144,6 @@ if [ "${install_mode}" != "stage4" ]; then
   runstep install_kernel "Installing kernel"
 fi
 
-runstep add_and_remove_services "Adding and removing services"
 runstep run_post_install_script "Running post-install script"
 runstep finishing_cleanup "Cleaning up"
 
