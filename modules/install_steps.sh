@@ -165,7 +165,6 @@ install_portage_tree() {
   else
     die "Unrecognized tree_type: ${tree_type}"
   fi
-  spawn_chroot "emerge -1 dev-libs/openssl" || die "could not remerge openssl to get rid of bindist"
 }
 
 set_root_password() {
