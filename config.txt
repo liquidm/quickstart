@@ -100,25 +100,6 @@ netmount - Mounts a network filesystem
     mountopts  - additional options to use when mounting
 
 
-logger - Specify the logger to use (defaults to syslog-ng)
-
-  Usage:
-    logger <logger>
-
-  Parameters:
-    logger - the name of the logger to use (such as metalog or syslog-ng)
-
-
-cron - Specify the cron daemon to use (defaults to vixie-cron)
-
-  Usage:
-    cron <cron>
-
-  Parameters:
-    cron - the name of the cron daemon to use (such as vixie-cron). you can
-           specify 'none' here to skip installing a cron daemon
-
-
 rootpw - Sets the root password (required if not using rootpw_crypt)
 
   Usage:
@@ -225,36 +206,13 @@ timezone - Specifies the timezone
     tz - timezone to use (relative to /usr/share/zoneinfo/)
 
 
-rcadd - Adds the specified service to the specified runlevel
-
-  Usage:
-    rcadd <service> <runlevel>
-
-  Parameters:
-    service  - name of service to add
-    runlevel - runlevel to add service to
-
-
-rcdel - Removes the specified service from the specified runlevel
-
-  Usage:
-    rcdel <service> <runlevel>
-
-  Parameters:
-    service  - name of service to remove
-    runlevel - runlevel to remove service from (usually not required)
-
-
 net - Sets up networking
 
   Usage:
-    net <device> <ip/dhcp> [gateway]
+    net <device>
 
   Parameters:
     device  - network device (such as eth0)
-    ip/dhcp - static IP address, "dhcp" or 
-              "current", which tries to use the current configuration
-    gateway - gateway IP if using a static IP
 
 
 skip - Skips an install step
