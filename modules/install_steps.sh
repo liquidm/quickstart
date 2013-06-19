@@ -61,8 +61,10 @@ setup_lvm() {
     local volgroup="$(echo ${logvol} | cut -d '_' -f1)"
     local name="$(echo ${logvol} | cut -d '_' -f2)"
     local size="$(eval echo \${lvm_logvol_${logvol}})"
-    spawn "lvcreate -L${size} -n${name} ${volgroup}" || die "could not create logical volume '${name}' with size ${size} in volume group '${volgroup}'"
+    spawn "lvcreate -Zn -L${size} -n${name} ${volgroup}" || die "could not create logical volume '${name}' with size ${size} in volume group '${volgroup}'"
   done
+
+  spawn "vgscan --mknodes" || die "could not create lvm device nodes"
 }
 
 format_devices() {
