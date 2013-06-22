@@ -6,13 +6,21 @@
 # uses the same kernel release
 install_guest_additions() {
 	cat <<"EOF" > ${chroot_dir}/tmp/vbox.sh
-emerge app-emulation/virtualbox-additions
+set -e
 
+emerge sys-kernel/gentoo-sources
+pushd /usr/src/linux
+cp /boot/config-* .config
+make modules_prepare
+popd
+
+emerge app-emulation/virtualbox-additions
 mount /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/
 /mnt/VBoxLinuxAdditions.run --nox11
 umount /mnt
-
 emerge -C app-emulation/virtualbox-additions
+
+emerge -C sys-kernel/gentoo-sources
 
 rm -f /tmp/vbox.sh
 EOF
