@@ -224,21 +224,36 @@ setup_network_post() {
   if [ -n "${net_devices}" ]; then
     for net_device in ${net_devices}; do
       local device="$(echo ${net_device} | cut -d '|' -f1)"
+      local mode="$(echo ${net_device} | cut -d '|' -f2)"
       local netctl=${chroot_dir}/etc/netctl/${device}
-      local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
-      local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
 
       cat > ${netctl} << EOF
 Description='${device}'
 Interface=${device}
 Connection=ethernet
 ForceConnect=yes
+EOF
+
+      case $mode in
+      dhcp)
+        cat >> ${netctl} << EOF
+IP=dhcp
+EOF
+
+      ;;
+      current)
+        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
+        local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
+        cat > ${netctl} << EOF
 IP=static
 Address=('${ipaddress}/32')
 Routes=('${gateway}')
 Gateway='${gateway}'
 DNS=('8.8.8.8' '8.8.4.4')
 EOF
+
+      ;;
+      esac
 
       spawn_chroot "netctl enable ${device}"
     done
