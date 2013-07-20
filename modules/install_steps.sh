@@ -244,7 +244,7 @@ EOF
       current)
         local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
         local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
-        cat > ${netctl} << EOF
+        cat >> ${netctl} << EOF
 IP=static
 Address=('${ipaddress}/32')
 Routes=('${gateway}')
