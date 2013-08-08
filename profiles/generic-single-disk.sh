@@ -1,6 +1,4 @@
-. profiles/common/base.sh
-. profiles/common/extra-volumes.sh
-. profiles/common/net-current-reboot.sh
+. profiles/common/generic.sh
 
 part sda 1 fd00 1G
 part sda 2 fd00
