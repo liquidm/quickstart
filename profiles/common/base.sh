@@ -22,7 +22,7 @@ set_clock() {
 	notify "Setting the system clock"
 	spawn "/etc/init.d/ntp stop" || :
 	spawn "ntpdate pool.ntp.org" || :
-	spawn "hwclock --systohc" || :
+	spawn "hwclock -w -u" || :
 }
 
 pre_install() {
