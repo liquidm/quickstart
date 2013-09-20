@@ -7,16 +7,7 @@ timezone Europe/Berlin
 
 kernel_image sys-kernel/zentoo-image
 
-lvm_logvol vg 10G usr
-lvm_logvol vg 10G var
-
-format /dev/vg/usr xfs
-format /dev/vg/var xfs
-
-mountfs /dev/vg/usr xfs /usr noatime
-mountfs /dev/vg/var xfs /var noatime
-
-extra_packages lvm2 xfsprogs zentoo-image
+extra_packages xfsprogs
 
 set_clock() {
 	notify "Setting the system clock"
