@@ -1,8 +1,4 @@
 vagrant_post_install() {
-	# setup hostname
-	echo "127.0.0.1 vagrant-zentoo.vagrantup.com vagrant-zentoo localhost" > ${chroot_dir}/etc/hosts
-	echo "hostname=\"vagrant-zentoo\"" > ${chroot_dir}/etc/conf.d/hostname
-
 	# setup user
 	spawn_chroot "useradd -m -d /home/vagrant -g users -G wheel,portage,cron vagrant"
 	spawn_chroot "echo vagrant:vagrant | chpasswd"
