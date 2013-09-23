@@ -25,6 +25,11 @@ set_clock() {
 	spawn "hwclock -w -u" || :
 }
 
+install_dependencies() {
+	spawn "apt-get install -y gdisk" || :
+}
+
 pre_install() {
 	set_clock
+	install_dependencies
 }
