@@ -14,6 +14,7 @@ EOF
 
 post_install() {
 	vagrant_post_install
+	prepare_virtualbox_guest
 	compact_with_cleanup
 	compact_with_zero_fill
 
