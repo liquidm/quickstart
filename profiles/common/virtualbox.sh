@@ -23,6 +23,11 @@ rm -f /tmp/vbox.sh
 EOF
 
 	spawn_chroot "bash /tmp/vbox.sh"
+
+	cat <<"EOF" > ${chroot_dir}/etc/modules-load.d/virtualbox.conf
+vboxguest
+vboxsf
+EOF
 }
 
 compact_with_cleanup() {
