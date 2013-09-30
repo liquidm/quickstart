@@ -1,4 +1,10 @@
-prepare_virtualbox_guest() {
+# this one is really ugly since it uses 'uname -r' for kernel detection and it
+# cannot be changed easily without breaking checksums, offsets and all kind of
+# nasty voodoo in the installer.
+#
+# as a result, this function should only be used if the source and target setup
+# uses the same kernel release
+install_guest_additions() {
 	cat <<"EOF" > ${chroot_dir}/tmp/vbox.sh
 set -e
 
@@ -8,6 +14,10 @@ pushd /usr/src/linux
 cp /boot/config-* .config
 make modules_prepare
 popd
+
+mount /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/
+/mnt/VBoxLinuxAdditions.run --nox11
+umount /mnt
 
 rm -f /tmp/vbox.sh
 EOF
@@ -27,7 +37,7 @@ compact_with_zero_fill() {
 }
 
 post_install() {
-	prepare_virtualbox_guest
+	install_guest_additions
 	compact_with_cleanup
 	compact_with_zero_fill
 
