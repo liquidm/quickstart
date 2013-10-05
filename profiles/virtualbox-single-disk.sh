@@ -8,5 +8,3 @@ format /dev/sda1 ext3
 mountfs /dev/sda1 ext3 /
 
 net eth0 dhcp
-
-shutdown
