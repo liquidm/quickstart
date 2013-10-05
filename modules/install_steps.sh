@@ -255,11 +255,11 @@ EOF
       ;;
       esac
 
-      spawn_chroot "netctl enable ${device}"
+      spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
     done
   fi
-  spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules"
-  spawn_chroot "systemctl enable sshd.service"
+  spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules" || die "failed to touch udev rules"
+  spawn_chroot "systemctl enable sshd.service" || die "failed to enable sshd"
 }
 
 install_extra_packages() {

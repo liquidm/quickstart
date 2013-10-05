@@ -30,13 +30,28 @@ vboxsf
 EOF
 }
 
+vagrant_post_install() {
+	# setup user
+	spawn_chroot "useradd -m -d /home/vagrant -g users -G wheel,portage,cron vagrant" || die "failed to create vagrant user"
+	spawn_chroot "echo vagrant:vagrant | chpasswd" || die "failed to set vagrant password"
+	spawn_chroot "curl -s -k -L https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub > /home/vagrant/.ssh/authorized_keys" || die "failed to download vagrant public key"
+
+	# sudo configuration
+	cat <<EOF > ${chroot_dir}/etc/sudoers
+Defaults env_keep="EDITOR SSH_AUTH_SOCK"
+root    ALL = (ALL) ALL
+%wheel  ALL = (ALL) NOPASSWD: ALL
+EOF
+}
+
 compact_with_cleanup() {
-	spawn_chroot "rm -rf /var/cache/genkernel"
-	spawn_chroot "rm -rf /usr/portage/distfiles/* /usr/portage/packages/*"
+	spawn_chroot "rm -rf /var/cache/genkernel" || die "failed to remove caches"
+	spawn_chroot "rm -rf /usr/portage/distfiles/* /usr/portage/packages/*" || die "failed to remove distfiles"
 }
 
 post_install() {
 	install_guest_additions
+	vagrant_post_install
 	compact_with_cleanup
 
 	# do not return with failure
