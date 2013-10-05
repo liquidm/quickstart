@@ -1,6 +1,6 @@
-stage_uri http://www.zentoo.org/downloads/amd64/base-current.tar.bz2
-tree_type snapshot http://www.zentoo.org/downloads/snapshots/portage-current.tar.bz2
-mirror http://mirror.zentoo.org rsync://rsync.zentoo.org/zentoo-portage
+stage_uri http://mirror.zenops.net/zentoo/amd64/base-current.tar.bz2
+tree_type snapshot http://mirror.zenops.net/zentoo/snapshots/portage-current.tar.bz2
+mirror http://mirror.zenops.net/zentoo rsync://mirror.zenops.net/zentoo-portage
 
 rootpw tux
 timezone Europe/Berlin
