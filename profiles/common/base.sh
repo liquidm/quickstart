@@ -1,4 +1,4 @@
-stage_uri http://mirror.zenops.net/zentoo/amd64/base-current.tar.bz2
+stage_uri http://mirror.zenops.net/zentoo/amd64/zentoo-amd64-base.tar.bz2
 tree_type snapshot http://mirror.zenops.net/zentoo/snapshots/portage-current.tar.bz2
 mirror http://mirror.zenops.net/zentoo rsync://mirror.zenops.net/zentoo-portage
 
