@@ -167,6 +167,11 @@ install_portage_tree() {
   else
     die "Unrecognized tree_type: ${tree_type}"
   fi
+  if $(isafunc post_install_portage); then
+    post_install_portage || die "error running post_install_portage()"
+  else
+    debug install_portage_tree "no post_install_portage script set"
+  fi
 }
 
 set_root_password() {
@@ -271,12 +276,7 @@ install_extra_packages() {
 }
 
 run_post_install_script() {
-  if [ -n "${post_install_script_uri}" ]; then
-    fetch "${post_install_script_uri}" "${chroot_dir}/var/tmp/post_install_script" || die "could not fetch post-install script"
-    chmod +x "${chroot_dir}/var/tmp/post_install_script"
-    spawn_chroot "/var/tmp/post_install_script" || die "error running post-install script"
-    spawn "rm ${chroot_dir}/var/tmp/post_install_script"
-  elif $(isafunc post_install); then
+  if $(isafunc post_install); then
     post_install || die "error running post_install()"
   else
     debug run_post_install_script "no post-install script set"
