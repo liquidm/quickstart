@@ -23,6 +23,8 @@ partition() {
       local type=$(echo ${partition} | cut -d: -f2)
       local size=$(echo ${partition} | cut -d: -f3)
       add_partition "${device}" "${minor}" "${type}" "${size}" || die "could not add partition ${minor} to device ${device}"
+	  partprobe
+	  sleep 1
     done
     if [ "${need_mbr}" = "yes" ]; then
       notify "Converting to MBR"
