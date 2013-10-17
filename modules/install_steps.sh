@@ -23,8 +23,6 @@ partition() {
       local type=$(echo ${partition} | cut -d: -f2)
       local size=$(echo ${partition} | cut -d: -f3)
       add_partition "${device}" "${minor}" "${type}" "${size}" || die "could not add partition ${minor} to device ${device}"
-	  partprobe
-	  sleep 1
     done
     if [ "${need_mbr}" = "yes" ]; then
       notify "Converting to MBR"
@@ -41,7 +39,11 @@ setup_md_raid() {
     if [ ! -e "/dev/md${arraynum}" ]; then
       spawn "mknod /dev/md${arraynum} b 9 ${arraynum}" || die "could not create device node for mdraid array ${array}"
     fi
-    spawn "mdadm --create --run /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+	if mdadm --version 2>&1 | grep -q 3.2.3; then
+    	spawn "mdadm --create --run --metadata=0.90 /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+	else
+    	spawn "mdadm --create --run /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+	fi
   done
 }
 
