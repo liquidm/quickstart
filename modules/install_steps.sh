@@ -304,22 +304,3 @@ finishing_cleanup() {
     rm /tmp/install.swapoff 2>/dev/null
   fi
 }
-
-failure_cleanup() {
-  spawn "mv ${logfile} ${logfile}.failed" || warn "could not move ${logfile} to ${logfile}.failed"
-  if [ -e /tmp/install.umount ]; then
-    for mnt in $(sort -r /tmp/install.umount); do
-      spawn "umount ${mnt}" || warn "could not unmount ${mnt}"
-    done
-    rm /tmp/install.umount 2>/dev/null
-  fi
-  if [ -e /tmp/install.swapoff ]; then
-    for swap in $(</tmp/install.swapoff); do
-      spawn "swapoff ${swap}" || warn "could not deactivate swap on ${swap}"
-    done
-    rm /tmp/install.swapoff 2>/dev/null
-  fi
-  for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
-    spawn "mdadm --manage --stop /dev/${array}" || warn "could not stop mdraid array ${array}"
-  done
-}

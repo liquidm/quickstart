@@ -35,7 +35,6 @@ die() {
   local msg=$1
 
   error "${msg}"
-  runstep failure_cleanup "Cleaning up after install failure"
   exit 1
 }
 
