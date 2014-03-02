@@ -7,7 +7,7 @@ unpack_tarball() {
   local dest=$2
   local preserve=$3
 
-  tar_flags="xv"
+  tar_flags="x"
 
   if [ "$preserve" = "1" ]; then
     tar_flags="${tar_flags}p"
