@@ -50,7 +50,7 @@ fetch_http_https_ftp() {
   local localfile=$2
 
   debug fetch_http_https_ftp "Fetching URL ${uri} to ${2}"
-  spawn "wget --no-check-certificate -O ${localfile} ${uri}"
+  spawn "wget --no-check-certificate --no-verbose -O ${localfile} ${uri}"
   local wget_exitcode=$?
   debug fetch_http_https_ftp "exit code from wget was ${wget_exitcode}"
   return ${wget_exitcode}
@@ -63,14 +63,4 @@ fetch_file() {
   uri=$(echo "${uri}" | sed -e 's|^file://||')
   debug fetch_file "Symlinking local file ${uri} to ${localfile}"
   ln -s "${uri}" "${localfile}"
-}
-
-fetch_tftp() {
-  local uri=$1
-  local localfile=$2
-
-  uri=$(echo "${uri}" | sed -e 's|^tftp://||')
-  host=$(echo "${uri}" | cut -d / -f 1)
-  path=$(echo "${uri}" | cut -d / -f 2-)
-  tftp -g -r "${path}" -l "${localfile}" "${host}" || die "could not fetch ${uri}"
 }
