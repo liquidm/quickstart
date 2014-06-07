@@ -1,20 +1,6 @@
 The follow is a list of all the valid configuration options with description and
 valid parameters.
 
-install_mode - Choose the install mode
-
-  Usage:
-    install_mode <mode>
-
-  Parameters:
-    mode - the install mode (normal, chroot, or stage4). A normal install is
-           for an install from a stage3 with bootloader setup. A chroot install
-           is the same as a normal install, except it skips the partitioning
-           and bootloader setup. A stage4 install is like a normal install,
-           except that it skips straight from unpacking the stage tarball to
-           configuring the bootloader
-
-
 part - Creates a partition
 
   Usage:
@@ -45,27 +31,6 @@ mdraid - Creates a md raid array
                 '-l 1 -n 2 /dev/sda2 /dev/sdb2'
 
 
-lvm_volgroup - Creates a LVM volume group
-
-  Usage:
-    lvm_volgroup <name> <devices>
-
-  Parameters:
-    name    - name of the volume group to create
-    devices - list of block devices to include in the volume group
-
-
-lvm_logvol - Create a LVM logical volume
-
-  Usage:
-    lvm_logvol <volgroup> <size> <name>
-
-  Parameters:
-    volgroup - name of a volume group created with 'lvm_volgroup'
-    size     - size of logical volume to pass to 'lvcreate'
-    name     - name of logical volume to pass to 'lvcreate'
-
-
 format - Formats a partition
 
   Usage:
@@ -88,18 +53,6 @@ mountfs - Mounts a filesystem
     mountopts  - additional options to use when mounting
 
 
-netmount - Mounts a network filesystem
-
-  Usage:
-    netmount <export> <type> <mountpoint> [mountopts]
-
-  Parameters:
-    export     - path to the network filesystem (such as 1.2.3.4:/some/export)
-    type       - network filesystem type (such as nfs, smbfs, cifs, etc.)
-    mountpoint - the directory to mount the filesystem
-    mountopts  - additional options to use when mounting
-
-
 rootpw - Sets the root password (required if not using rootpw_crypt)
 
   Usage:
@@ -107,15 +60,6 @@ rootpw - Sets the root password (required if not using rootpw_crypt)
 
   Parameters:
     password - the plain-text password for the root user
-
-
-rootpw_crypt - Sets the root password (required if not using rootpw)
-
-  Usage:
-    rootpw_crypt <password>
-
-  Parameters:
-    password - the pre-hashed password for the root user
 
 
 stage_uri - Specifies the URI to the stage tarball (required)
@@ -169,24 +113,6 @@ extra_packages - Specifies extra packages to emerge
     pkg - package (or packages, space-separated) to emerge
 
 
-genkernel_opts - Specifies extra options to pass to genkernel
-
-  Usage:
-    genkernel_opts <opts>
-
-  Parameters:
-    opts - the extra options to pass to genkernel
-
-
-kernel_config_uri - Specifies the URI to a custom kernel config
-
-  Usage:
-    kernel_config_uri <uri>
-
-  Parameters:
-    uri - URI to the location of the custom kernel config
-
-
 kernel_image - Specifies the kernel sources to use (defaults to
                  gentoo-sources)
 
@@ -213,21 +139,6 @@ net - Sets up networking
 
   Parameters:
     device  - network device (such as eth0)
-
-
-skip - Skips an install step
-
-  Usage:
-    skip <install step>
-
-  Parameters:
-    install step - name of step to skip
-
-
-use_linux32 - Enable the use of linux32 for doing 32ul installs on 64-bit boxes
-
-  Usage:
-    use_linux32
 
 
 shutdown - Shutdown after quickstart has completed succesfully

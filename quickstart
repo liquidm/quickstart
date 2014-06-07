@@ -42,9 +42,9 @@ EOF
 
 # Import modules
 import output
-import misc
 import spawn
 import fetcher
+import unpacker
 import partition
 import install_steps
 import config
@@ -108,9 +108,6 @@ else
     error "Logfile is not writeable!"
     exit 1
   fi
-  arch=$(get_arch)
-  debug main "arch is ${arch}"
-  [ -z "${arch}" ] && die "Could not determine arch!"
   runstep sanity_check_config "Sanity checking config"
   if [ "${sanitycheck}" = "1" ]; then
     debug main "Exiting due to --sanity-check"
@@ -119,31 +116,21 @@ else
 fi
 
 
-[ -z "${install_mode}" ] && install_mode="normal"
-
 run_pre_install_script "Running pre-install script"
 
-if [ "${install_mode}" != "chroot" ]; then 
-  runstep partition "Partitioning"
-fi
-
+runstep partition "Partitioning"
 runstep setup_md_raid "Setting up RAID arrays"
-runstep setup_lvm "Setting up LVM volumes"
 runstep format_devices "Formatting devices"
 runstep mount_partitions "Mounting local partitions"
 runstep unpack_stage_tarball "Fetching and unpacking stage tarball"
 runstep prepare_chroot "Preparing chroot"
 runstep install_portage_tree "Installing portage tree"
 runstep install_extra_packages "Installing extra packages"
-
-if [ "${install_mode}" != "stage4" ]; then
-  runstep set_root_password "Setting root password"
-  runstep set_timezone "Setting timezone"
-  runstep setup_fstab "Setting up /etc/fstab"
-  runstep setup_network_post "Setting up post-install networking"
-  runstep install_kernel "Installing kernel"
-fi
-
+runstep set_root_password "Setting root password"
+runstep set_timezone "Setting timezone"
+runstep setup_fstab "Setting up /etc/fstab"
+runstep setup_network_post "Setting up post-install networking"
+runstep install_kernel "Installing kernel"
 runstep run_post_install_script "Running post-install script"
 runstep finishing_cleanup "Cleaning up"
 

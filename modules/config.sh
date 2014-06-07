@@ -1,9 +1,3 @@
-install_mode() {
-  local mode=$1
-
-  install_mode="${mode}"
-}
-
 part() {
   local drive=$1
   local minor=$2
@@ -31,21 +25,6 @@ mdraid() {
   local arrayopts=$@
 
   eval "mdraid_${array}=\"${arrayopts}\""
-}
-
-lvm_volgroup() {
-  local volgroup=$1
-  shift
-  local devices=$@
-
-  eval "lvm_volgroup_${volgroup}=\"${devices}\""
-}
-
-lvm_logvol() {
-  local volgroup=$1
-  local size=$2
-  local name=$3
-  eval "lvm_logvol_${volgroup}_${name}=\"${size}\""
 }
 
 format() {
@@ -76,31 +55,10 @@ mountfs() {
   fi
 }
 
-netmount() {
-  local export=$1
-  local type=$2
-  local mountpoint=$3
-  local mountopts=$4
-
-  [ -z "${mountopts}" ] && mountopts="defaults"
-  local tmpnetmount="${export}|${type}|${mountpoint}|${mountopts}"
-  if [ -n "${netmounts}" ]; then
-    netmounts="${netmounts} ${tmpnetmount}"
-  else
-    netmounts="${tmpnetmount}"
-  fi
-}  
-
 rootpw() {
   local pass=$1
 
   root_password="${pass}"
-}
-
-rootpw_crypt() {
-  local pass=$1
-
-  root_password_hash="${pass}"
 }
 
 stage_uri() {
@@ -140,18 +98,6 @@ extra_packages() {
   fi
 }
 
-genkernel_opts() {
-  local opts=$@
-
-  genkernel_opts="${opts}"
-}
-
-kernel_config_uri() {
-  local uri=$1
-
-  kernel_config_uri="${uri}"
-}
-
 kernel_image() {
   local pkg=$1
 
@@ -183,15 +129,6 @@ logfile() {
   logfile=${file}
 }
 
-skip() {
-  local func=$1
-  eval "skip_${func}=1"
-}
-
-use_linux32() {
-  linux32="linux32"
-}
-
 shutdown() {
   shutdown="yes"
 }
@@ -209,10 +146,6 @@ sanity_check_config() {
 
   debug sanity_check_config "$(set | grep '^[a-z]')"
 
-  if [ -n "${install_mode}" -a "${install_mode}" != "normal" -a "${install_mode}" != "chroot" -a "${install_mode}" != "stage4" ]; then
-    error "install_mode must be 'normal', 'chroot', or 'stage4'"
-    fatal=1
-  fi
   if [ -z "${chroot_dir}" ]; then
     error "chroot_dir is not defined (this can only happen if you set it to a blank string)"
     fatal=1
@@ -229,7 +162,7 @@ sanity_check_config() {
     error "you must specify a portage snapshot URI with tree_type snapshot"
     fatal=1
   fi
-  if [ -z "${root_password}" -a -z "${root_password_hash}" ]; then
+  if [ -z "${root_password}" ]; then
     error "you must specify a root password"
     fatal=1
   fi

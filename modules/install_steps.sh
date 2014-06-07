@@ -39,32 +39,12 @@ setup_md_raid() {
     if [ ! -e "/dev/md${arraynum}" ]; then
       spawn "mknod /dev/md${arraynum} b 9 ${arraynum}" || die "could not create device node for mdraid array ${array}"
     fi
-    spawn "mdadm --create --run /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+    if mdadm --version 2>&1 | grep -q 3.2.3; then
+      spawn "mdadm --create --run --metadata=0.90 /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+    else
+      spawn "mdadm --create --run /dev/${array} ${arrayopts}" || die "could not create mdraid array ${array}"
+    fi
   done
-}
-
-setup_lvm() {
-  # make sure we have a writable /var/lock for LVM
-  mount -t tmpfs none /var/lock
-  echo "/var/lock" >> /tmp/install.umount
-
-  for volgroup in $(set | grep '^lvm_volgroup_' | cut -d= -f1 | sed -e 's:^lvm_volgroup_::' | sort); do
-    local volgroup_temp="lvm_volgroup_${volgroup}"
-    local volgroup_devices="$(eval echo \${${volgroup_temp}})"
-    for device in ${volgroup_devices}; do
-      spawn "pvcreate -ffy ${device}" || die "could not run 'pvcreate' on ${device}"
-    done
-    spawn "vgcreate ${volgroup} ${volgroup_devices}" || die "could not create volume group '${volgroup}' from devices: ${volgroup_devices}"
-  done
-
-  for logvol in $(set | grep '^lvm_logvol_' | cut -d= -f1 | sed -e 's:^lvm_logvol_::' | sort); do
-    local volgroup="$(echo ${logvol} | cut -d '_' -f1)"
-    local name="$(echo ${logvol} | cut -d '_' -f2)"
-    local size="$(eval echo \${lvm_logvol_${logvol}})"
-    spawn "lvcreate -Zn -L${size} -n${name} ${volgroup}" || die "could not create logical volume '${name}' with size ${size} in volume group '${volgroup}'"
-  done
-
-  spawn "vgscan --mknodes" || die "could not create lvm device nodes"
 }
 
 format_devices() {
@@ -109,7 +89,7 @@ mount_partitions() {
           spawn "swapon ${devnode}" || warn "could not activate swap ${devnode}"
           echo "${devnode}" >> /tmp/install.swapoff
           ;;
-        ext2|ext3|ext4|xfs|btrfs)
+        ext2|ext3|ext4|xfs)
           echo "mount -t ${type} ${devnode} ${chroot_dir}${mountpoint} ${mountopts}" >> /tmp/install.mount
           echo "${chroot_dir}${mountpoint}" >> /tmp/install.umount
           ;;
@@ -175,9 +155,7 @@ install_portage_tree() {
 }
 
 set_root_password() {
-  if [ -n "${root_password_hash}" ]; then
-    spawn_chroot "echo 'root:${root_password_hash}' | chpasswd -e" || die "could not set root password"
-  elif [ -n "${root_password}" ]; then
+  if [ -n "${root_password}" ]; then
     spawn_chroot "echo 'root:${root_password}' | chpasswd" || die "could not set root password"
   fi
 }
@@ -216,13 +194,6 @@ setup_fstab() {
     fi
     echo -e "UUID=${devuuid}\t${mountpoint}\t${type}\t${mountopts}\t${dump_pass}" >> ${chroot_dir}/etc/fstab
   done
-  for mount in ${netmounts}; do
-    local export=$(echo ${mount} | cut -d '|' -f1)
-    local type=$(echo ${mount} | cut -d '|' -f2)
-    local mountpoint=$(echo ${mount} | cut -d '|' -f3)
-    local mountopts=$(echo ${mount} | cut -d '|' -f4)
-    echo -e "${export}\t${mountpoint}\t${type}\t${mountopts}\t0 0" >> ${chroot_dir}/etc/fstab
-  done
 }
 
 setup_network_post() {
@@ -232,35 +203,28 @@ setup_network_post() {
       local mode="$(echo ${net_device} | cut -d '|' -f2)"
       local netctl=${chroot_dir}/etc/netctl/${device}
 
-      cat > ${netctl} << EOF
-Description='${device}'
-Interface=${device}
-Connection=ethernet
-ForceConnect=yes
-EOF
-
       case $mode in
       dhcp)
-        cat >> ${netctl} << EOF
-IP=dhcp
-EOF
-
+        spawn_chroot "systemctl enable dhcpcd.service" || die "failed to enable dhcpcd"
       ;;
       current)
         local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
         local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
         cat >> ${netctl} << EOF
+Description='${device}'
+Interface=${device}
+Connection=ethernet
+ForceConnect=yes
 IP=static
 Address=('${ipaddress}/32')
 Routes=('${gateway}')
 Gateway='${gateway}'
 DNS=('8.8.8.8' '8.8.4.4')
 EOF
-
+      spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
       ;;
       esac
 
-      spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
     done
   fi
   spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules" || die "failed to touch udev rules"
@@ -299,23 +263,4 @@ finishing_cleanup() {
     done
     rm /tmp/install.swapoff 2>/dev/null
   fi
-}
-
-failure_cleanup() {
-  spawn "mv ${logfile} ${logfile}.failed" || warn "could not move ${logfile} to ${logfile}.failed"
-  if [ -e /tmp/install.umount ]; then
-    for mnt in $(sort -r /tmp/install.umount); do
-      spawn "umount ${mnt}" || warn "could not unmount ${mnt}"
-    done
-    rm /tmp/install.umount 2>/dev/null
-  fi
-  if [ -e /tmp/install.swapoff ]; then
-    for swap in $(</tmp/install.swapoff); do
-      spawn "swapoff ${swap}" || warn "could not deactivate swap on ${swap}"
-    done
-    rm /tmp/install.swapoff 2>/dev/null
-  fi
-  for array in $(set | grep '^mdraid_' | cut -d= -f1 | sed -e 's:^mdraid_::' | sort); do
-    spawn "mdadm --manage --stop /dev/${array}" || warn "could not stop mdraid array ${array}"
-  done
 }

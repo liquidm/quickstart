@@ -17,19 +17,11 @@ the variables appropriately based on the options passed to them. A list of all
 configurable options is available in the file doc/config.txt. You can also find
 an example profile in the same directory.
 
-Supported Architectures
-
-    * x86
-    * x86_64 (amd64)
-    * pa-risc (hppa)
-    * sparc64
-
 Features
 
     * partitioning from a blank disk (drive is wiped)
     * specify partition sizes in MB, GB, % of remaining, or + (all remaining)
     * creation of md raid arrays
-    * creation of lvm2 volumes
     * ability to format partitions as ext2, ext3, swap, reiserfs, xfs, or jfs
     * specify local filesystems to be mounted during the install
     * specify network shares to be mounted during the install

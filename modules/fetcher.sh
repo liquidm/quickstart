@@ -1,25 +1,21 @@
 get_filename_from_uri() {
   local uri=$1
-
   basename "${1}"
 }
 
 get_path_from_uri() {
   local uri=$1
-
   echo "${uri}" | cut -d / -f 4-
 }
 
 get_protocol_from_uri() {
   local uri=$1
-
   echo "${uri}" | sed -e 's|://.\+$||'
 }
 
 fetch() {
   local uri=$1
   local localfile=$2
-
   local protocol=$(get_protocol_from_uri "${uri}")
   debug fetch "protocol is ${protocol}"
   if $(isafunc "fetch_${protocol}"); then
@@ -48,7 +44,6 @@ fetch_ftp() {
 fetch_http_https_ftp() {
   local uri=$1
   local localfile=$2
-
   debug fetch_http_https_ftp "Fetching URL ${uri} to ${2}"
   spawn "wget --no-check-certificate --no-verbose -O ${localfile} ${uri}"
   local wget_exitcode=$?
@@ -59,7 +54,6 @@ fetch_http_https_ftp() {
 fetch_file() {
   local uri=$1
   local localfile=$2
-
   uri=$(echo "${uri}" | sed -e 's|^file://||')
   debug fetch_file "Symlinking local file ${uri} to ${localfile}"
   ln -s "${uri}" "${localfile}"
