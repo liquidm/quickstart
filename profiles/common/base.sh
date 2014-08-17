@@ -6,7 +6,7 @@ kernel_image sys-kernel/zentoo-image
 rootpw tux
 timezone Europe/Berlin
 
-net eth0 dhcp
+net eth0 current
 
 reboot
 
