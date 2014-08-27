@@ -1,5 +1,7 @@
 . profiles/common/base.sh
 
+net eth0 current
+
 part sda 1 fd00 32G
 part sda 2 a504
 

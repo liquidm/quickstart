@@ -6,8 +6,6 @@ kernel_image sys-kernel/zentoo-image
 rootpw tux
 timezone Europe/Berlin
 
-net eth0 current
-
 reboot
 
 set_clock() {
