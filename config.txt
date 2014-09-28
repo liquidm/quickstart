@@ -15,11 +15,6 @@ part - Creates a partition
             (these should only be used after all specific partition sizes are
             specified), leave blank for "extended"
 
-need_mbr - Convert GPT partition table to MBR for legacy systems
-
-  Usage:
-    need_mbr
-
 mdraid - Creates a md raid array
 
   Usage:

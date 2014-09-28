@@ -16,7 +16,13 @@ set_clock() {
 }
 
 install_dependencies() {
-	spawn "apt-get install -y gdisk" || :
+	if [[ -x /usr/bin/yum ]]; then
+		spawn "/usr/bin/yum -y install git gdisk parted e2fsprogs xfsprogs"
+	elif [[ -x /usr/bin/apt-get ]]; then
+		spawn "/usr/bin/apt-get install -y git gdisk parted e2fsprogs xfsprogs"
+	elif [[ -x /usr/bin/emerge ]]; then
+		spawn "/usr/bin/emerge dev-vcs/git sys-apps/gptfdisk sys-block/parted sys-fs/e2fsprogs sys-fs/xfsprogs"
+	fi
 }
 
 pre_install() {

@@ -15,10 +15,6 @@ part() {
   debug part "${drive_temp} is now: $(eval echo \${${drive_temp}})"
 }
 
-need_mbr() {
-  need_mbr="yes"
-}
-
 mdraid() {
   local array=$1
   shift
