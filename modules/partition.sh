@@ -16,6 +16,6 @@ add_partition() {
   local type=$3
   local size=$4
 
-  sgdisk -n "${minor}::+${size}" -t "${minor}:${type}" -c "${minor}:Linux filesystem"
+  sgdisk -n "${minor}::+${size}" -t "${minor}:${type}" -c "${minor}:Linux filesystem" ${device}
   return $?
 }
