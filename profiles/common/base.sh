@@ -18,8 +18,6 @@ set_clock() {
 install_dependencies() {
 	if [[ -x /usr/bin/yum ]]; then
 		spawn "/usr/bin/yum -y install gdisk parted e2fsprogs xfsprogs"
-	elif [[ -x /usr/bin/apt-get ]]; then
-		spawn "/usr/bin/apt-get install -y gdisk parted e2fsprogs xfsprogs"
 	fi
 }
 
