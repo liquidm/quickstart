@@ -216,7 +216,7 @@ EOF
         spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
         ;;
       lxc)
-        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
+        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
         local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
         cat >> ${chroot_dir}/etc/netctl/lxcbr0 << EOF
 Description='lxcbr0'
@@ -224,8 +224,7 @@ Interface=lxcbr0
 Connection=bridge
 BindsToInterfaces=(${device})
 IP=static
-Address=('${ipaddress}/32')
-Routes=('${gateway}')
+Address=('${ipaddress}')
 Gateway='${gateway}'
 DNS=('8.8.8.8' '8.8.4.4')
 EOF
