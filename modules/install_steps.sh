@@ -229,7 +229,7 @@ Routes=('${gateway}')
 Gateway='${gateway}'
 DNS=('8.8.8.8' '8.8.4.4')
 EOF
-        spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
+        spawn_chroot "netctl enable lxcbr0" || die "could not enable network interface"
         ;;
       esac
 
