@@ -194,7 +194,6 @@ setup_network_post() {
     for net_device in ${net_devices}; do
       local device="$(echo ${net_device} | cut -d '|' -f1)"
       local mode="$(echo ${net_device} | cut -d '|' -f2)"
-      local netctl=${chroot_dir}/etc/netctl/${device}
 
       case $mode in
       dhcp)
@@ -203,11 +202,27 @@ setup_network_post() {
       current)
         local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
         local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
-        cat >> ${netctl} << EOF
+        cat >> ${chroot_dir}/etc/netctl/${device} << EOF
 Description='${device}'
 Interface=${device}
 Connection=ethernet
 ForceConnect=yes
+IP=static
+Address=('${ipaddress}/32')
+Routes=('${gateway}')
+Gateway='${gateway}'
+DNS=('8.8.8.8' '8.8.4.4')
+EOF
+        spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
+        ;;
+      lxc)
+        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
+        local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
+        cat >> ${chroot_dir}/etc/netctl/lxcbr0 << EOF
+Description='lxcbr0'
+Interface=lxcbr0
+Connection=bridge
+BindsToInterfaces=(${device})
 IP=static
 Address=('${ipaddress}/32')
 Routes=('${gateway}')
