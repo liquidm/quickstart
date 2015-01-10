@@ -2,6 +2,8 @@
 
 net eth0 lxc
 
+extra_packages net-misc/bridge-utils
+
 part sda 1 fd00 32G
 part sda 2 a504
 
