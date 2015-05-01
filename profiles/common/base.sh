@@ -4,9 +4,7 @@ mirror http://mirror.zenops.net/zentoo rsync://mirror.zenops.net/zentoo-portage
 kernel_image sys-kernel/zentoo-image
 
 rootpw tux
-timezone Europe/Berlin
-
-reboot
+timezone Etc/UTC
 
 set_clock() {
 	notify "Setting the system clock"

@@ -129,10 +129,6 @@ shutdown() {
   shutdown="yes"
 }
 
-reboot() {
-  reboot="yes"
-}
-
 verbose() {
   verbose=1
 }

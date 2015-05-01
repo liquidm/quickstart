@@ -142,12 +142,6 @@ shutdown - Shutdown after quickstart has completed succesfully
     shutdown
 
 
-reboot - Reboot after quickstart has completed succesfully
-
-  Usage:
-    reboot
-
-
 verbose - Enable verbose mode (same as --verbose)
 
   Usage:
