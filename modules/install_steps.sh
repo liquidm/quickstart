@@ -197,44 +197,71 @@ setup_network_post() {
 
       case $mode in
       dhcp)
-        spawn_chroot "systemctl enable dhcpcd.service" || die "failed to enable dhcpcd"
+        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
+[Match]
+Name=${device}
+
+[Network]
+DHCP=both
+EOF
         ;;
       current)
-        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
-        local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
-        cat >> ${chroot_dir}/etc/netctl/${device} << EOF
-Description='${device}'
-Interface=${device}
-Connection=ethernet
-ForceConnect=yes
-IP=static
-Address=('${ipaddress}/32')
-Routes=('${gateway}')
-Gateway='${gateway}'
-DNS=('8.8.8.8' '8.8.4.4')
+        local gateway=$(ip route list | grep default | awk '{ print $3 }')
+        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
+        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
+[Match]
+Name=${device}
+
+[Network]
+Address=${ipaddress}
+Gateway=${gateway}
 EOF
-        spawn_chroot "netctl enable ${device}" || die "could not enable network interface"
+        ;;
+      current-peer)
+        local gateway=$(ip route list | grep default | awk '{ print $3 }')
+        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
+        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
+[Match]
+Name=${device}
+
+[Network]
+Gateway=${gateway}
+Address=${ipaddress}/32
+
+[Route]
+Destination=${gateway}
+EOF
         ;;
       lxc)
+        local gateway=$(ip route list | grep default | awk '{ print $3 }')
         local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
-        local gateway=$(ip route list | grep default.*${device} | awk '{ print $3 }')
-        cat >> ${chroot_dir}/etc/netctl/lxcbr0 << EOF
-Description='lxcbr0'
-Interface=lxcbr0
-Connection=bridge
-BindsToInterfaces=(${device})
-IP=static
-Address=('${ipaddress}')
-Gateway='${gateway}'
-DNS=('8.8.8.8' '8.8.4.4')
+        cat >> ${chroot_dir}/etc/systemd/network/lxcbr0.netdev << EOF
+[NetDev]
+Name=lxcbr0
+Kind=bridge
 EOF
-        spawn_chroot "netctl enable lxcbr0" || die "could not enable network interface"
+        cat >> ${chroot_dir}/etc/systemd/network/lxcbr0.network << EOF
+[Match]
+Name=lxcbr0
+
+[Network]
+Address=${ipaddress}
+Gateway=${gateway}
+EOF
+        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
+[Match]
+Name=${device}
+
+[Network]
+Bridge=lxcbr0
+EOF
         ;;
       esac
 
     done
   fi
   spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules" || die "failed to touch udev rules"
+  spawn_chroot "systemctl enable systemd-networkd.service" || die "failed to enable sshd"
   spawn_chroot "systemctl enable sshd.service" || die "failed to enable sshd"
 }
 
