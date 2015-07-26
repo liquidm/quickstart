@@ -237,8 +237,13 @@ EOF
 
     done
   fi
+
   spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules" || die "failed to touch udev rules"
-  spawn_chroot "systemctl enable systemd-networkd.service" || die "failed to enable sshd"
+
+  spawn_chroot "systemctl disable systemd-networkd.service" || die "failed to disable networkd"
+  spawn_chroot "systemctl enable systemd-networkd.service" || die "failed to enable networkd"
+
+  spawn_chroot "systemctl disable sshd.service" || die "failed to disable sshd"
   spawn_chroot "systemctl enable sshd.service" || die "failed to enable sshd"
 }
 
