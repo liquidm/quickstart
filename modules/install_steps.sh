@@ -220,26 +220,18 @@ EOF
       lxc)
         local gateway=$(ip route list | grep default | awk '{ print $3 }')
         local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
-        cat >> ${chroot_dir}/etc/systemd/network/lxcbr0.netdev << EOF
-[NetDev]
-Name=lxcbr0
-Kind=bridge
+        spawn_chroot "emerge -n netctl" || die "could not emerge netctl"
+        cat >> ${chroot_dir}/etc/netctl/lxcbr0 << EOF
+Description='lxcbr0'
+Interface=lxcbr0
+Connection=bridge
+BindsToInterfaces=(${device})
+IP=static
+Address=('${ipaddress}')
+Gateway='${gateway}'
+DNS=('8.8.8.8' '8.8.4.4')
 EOF
-        cat >> ${chroot_dir}/etc/systemd/network/lxcbr0.network << EOF
-[Match]
-Name=lxcbr0
-
-[Network]
-Address=${ipaddress}
-Gateway=${gateway}
-EOF
-        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
-[Match]
-Name=${device}
-
-[Network]
-Bridge=lxcbr0
-EOF
+        spawn_chroot "netctl enable lxcbr0" || die "could not enable network interface"
         ;;
       esac
 
