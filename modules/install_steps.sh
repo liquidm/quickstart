@@ -217,21 +217,6 @@ Address=${ipaddress}
 Gateway=${gateway}
 EOF
         ;;
-      current-peer)
-        local gateway=$(ip route list | grep default | awk '{ print $3 }')
-        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }' | awk -F/ '{ print $1 }')
-        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
-[Match]
-Name=${device}
-
-[Network]
-Gateway=${gateway}
-Address=${ipaddress}/32
-
-[Route]
-Destination=${gateway}
-EOF
-        ;;
       lxc)
         local gateway=$(ip route list | grep default | awk '{ print $3 }')
         local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
