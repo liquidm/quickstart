@@ -143,24 +143,37 @@ sanity_check_config() {
     fatal=1
   fi
   if [ -z "${stage_uri}" ]; then
-    error "you must specify a stage_uri"
-    fatal=1
+    warn "stage_uri not set ... assuming zentoo base image"
+    stage_uri http://mirror.zenops.net/zentoo/amd64/zentoo-amd64-base.tar.bz2
   fi
   if [ -z "${tree_type}" ]; then
-    warn "tree_type not set...defaulting to sync"
-    tree_type="sync"
+    warn "tree_type not set ... assuming zentoo snapshot"
+    tree_type snapshot http://mirror.zenops.net/zentoo/snapshots/portage-current.tar.bz2
+    mirror http://mirror.zenops.net/zentoo rsync://mirror.zenops.net/zentoo-portage
   fi
   if [ "${tree_type}" = "snapshot" -a -z "${portage_snapshot_uri}" ]; then
     error "you must specify a portage snapshot URI with tree_type snapshot"
     fatal=1
   fi
   if [ -z "${root_password}" ]; then
-    error "you must specify a root password"
-    fatal=1
+    warn "rootpw not set ... defaulting to 'tux'"
+    rootpw tux
+  fi
+  if [ -z "${timezone}" ]; then
+    warn "timezone not set ... defaulting to UTC"
+    timezone Etc/UTC
+  fi
+  if [ -z "${kernel_image}" ]; then
+    warn "kernel_image not set ... assuming zentoo image"
+    kernel_image sys-kernel/zentoo-image
   fi
   if [ -z "${timezone}" ]; then
     warn "timezone not set...assuming UTC"
-    timezone=UTC
+    timezone Etc/UTC
+  fi
+  if [ -z "${timezone}" ]; then
+    warn "timezone not set...assuming UTC"
+    timezone Etc/UTC
   fi
 
   debug sanity_check_config "$(set | grep '^[a-z]')"

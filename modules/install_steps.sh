@@ -11,10 +11,21 @@ run_pre_install_script() {
   fi
 }
 
+prepare_rescue() {
+	notify "Setting the system clock"
+	spawn "/etc/init.d/ntp stop" || :
+	spawn "ntpdate pool.ntp.org" || :
+	spawn "hwclock -w -u" || :
+	if [[ -x /usr/bin/yum ]]; then
+		spawn "/usr/bin/yum -y install gdisk parted e2fsprogs xfsprogs"
+	fi
+	if [[ -x /usr/bin/apt-get ]]; then
+		spawn "apt-get update"
+		spawn "apt-get install -y gdisk"
+	fi
+}
+
 partition() {
-  if [[ -x /usr/bin/apt-get ]]; then
-    apt-get install -y gdisk
-  fi
   for device in $(set | grep '^partitions_' | cut -d= -f1 | sed -e 's:^partitions_::'); do
     debug partition "device is ${device}"
     local device_temp="partitions_${device}"
