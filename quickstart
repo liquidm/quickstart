@@ -115,6 +115,9 @@ else
   fi
 fi
 
+if [[ -x /usr/bin/apt-get ]]; then
+  apt-get update
+fi
 
 run_pre_install_script "Running pre-install script"
 

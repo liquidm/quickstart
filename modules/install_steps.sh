@@ -12,6 +12,9 @@ run_pre_install_script() {
 }
 
 partition() {
+  if [[ -x /usr/bin/apt-get ]]; then
+    apt-get install -y gdisk
+  fi
   for device in $(set | grep '^partitions_' | cut -d= -f1 | sed -e 's:^partitions_::'); do
     debug partition "device is ${device}"
     local device_temp="partitions_${device}"
