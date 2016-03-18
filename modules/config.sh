@@ -75,7 +75,6 @@ tree_type() {
 
 mirror() {
   distfiles_mirror=$1
-  portage_mirror=$2
 }
 
 chroot_dir() {
@@ -149,7 +148,7 @@ sanity_check_config() {
   if [ -z "${tree_type}" ]; then
     warn "tree_type not set ... assuming zentoo snapshot"
     tree_type snapshot http://mirror.zenops.net/zentoo/snapshots/portage-current.tar.bz2
-    mirror http://mirror.zenops.net/zentoo rsync://mirror.zenops.net/zentoo-portage
+    mirror "http://mirror.zenops.net/ http://mirror.leaseweb.com/gentoo/ http://gentoo.mirrors.ovh.net/gentoo-distfiles/"
   fi
   if [ "${tree_type}" = "snapshot" -a -z "${portage_snapshot_uri}" ]; then
     error "you must specify a portage snapshot URI with tree_type snapshot"
