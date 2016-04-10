@@ -48,13 +48,13 @@ mountfs - Mounts a filesystem
     mountopts  - additional options to use when mounting
 
 
-rootpw - Sets the root password (required if not using rootpw_crypt)
+ssh_authorized_key - Sets the authorized SSH key for root
 
   Usage:
-    rootpw <password>
+    ssh_authorized_key <key>
 
   Parameters:
-    password - the plain-text password for the root user
+    key - the SSH public key
 
 
 stage_uri - Specifies the URI to the stage tarball (required)

@@ -51,15 +51,12 @@ mountfs() {
   fi
 }
 
-rootpw() {
-  local pass=$1
-
-  root_password="${pass}"
+ssh_authorized_key() {
+  ssh_authorized_key="${1}"
 }
 
 stage_uri() {
   local uri=$1
-
   stage_uri="${uri}"
 }
 
@@ -154,9 +151,9 @@ sanity_check_config() {
     error "you must specify a portage snapshot URI with tree_type snapshot"
     fatal=1
   fi
-  if [ -z "${root_password}" ]; then
-    warn "rootpw not set ... defaulting to 'tux'"
-    rootpw tux
+  if [ -z "${ssh_authorized_key}" ]; then
+    error "ssh_authorized_key not set"
+    fatal=1
   fi
   if [ -z "${timezone}" ]; then
     warn "timezone not set ... defaulting to UTC"

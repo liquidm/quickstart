@@ -158,9 +158,10 @@ install_portage_tree() {
   fi
 }
 
-set_root_password() {
-  if [ -n "${root_password}" ]; then
-    spawn_chroot "echo 'root:${root_password}' | chpasswd" || die "could not set root password"
+set_ssh_authorized_key() {
+  if [ -n "${ssh_authorized_key}" ]; then
+    mkdir -p "${chroot_dir}/root/.ssh/"
+    echo "${ssh_authorized_key}" > "${chroot_dir}/root/.ssh/authorized_keys"
   fi
 }
 
