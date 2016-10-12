@@ -60,16 +60,6 @@ stage_uri() {
   stage_uri="${uri}"
 }
 
-tree_type() {
-  local type=$1
-  local uri=$2
-  local branch=$3
-
-  tree_type="${type}"
-  portage_snapshot_uri="${uri}"
-  portage_snapshot_branch="${branch}"
-}
-
 mirror() {
   distfiles_mirror=$1
 }
@@ -139,17 +129,8 @@ sanity_check_config() {
     fatal=1
   fi
   if [ -z "${stage_uri}" ]; then
-    warn "stage_uri not set ... assuming zentoo base image"
-    stage_uri http://mirror.zenops.net/zentoo/amd64/zentoo-amd64-base.tar.bz2
-  fi
-  if [ -z "${tree_type}" ]; then
-    warn "tree_type not set ... assuming zentoo snapshot"
-    tree_type snapshot http://mirror.zenops.net/zentoo/snapshots/portage-current.tar.bz2
-    mirror "http://mirror.zenops.net/ http://mirror.leaseweb.com/gentoo/ http://gentoo.mirrors.ovh.net/gentoo-distfiles/"
-  fi
-  if [ "${tree_type}" = "snapshot" -a -z "${portage_snapshot_uri}" ]; then
-    error "you must specify a portage snapshot URI with tree_type snapshot"
-    fatal=1
+    warn "stage_uri not set ... assuming cloud image"
+    stage_uri https://cloud-images.ubuntu.com/yakkety/current/yakkety-server-cloudimg-amd64.tar.gz
   fi
   if [ -z "${ssh_authorized_key}" ]; then
     error "ssh_authorized_key not set"
@@ -160,8 +141,8 @@ sanity_check_config() {
     timezone Etc/UTC
   fi
   if [ -z "${kernel_image}" ]; then
-    warn "kernel_image not set ... assuming zentoo image"
-    kernel_image sys-kernel/zentoo-image
+    warn "kernel_image not set ... assuming default kernel"
+    kernel_image linux-generic
   fi
   if [ -z "${timezone}" ]; then
     warn "timezone not set...assuming UTC"

@@ -67,18 +67,6 @@ stage_uri - Specifies the URI to the stage tarball (required)
           ftp, or file
 
 
-tree_type - Specifies the portage tree type (defaults to sync)
-
-  Usage:
-    tree_type <type> [uri]
-
-  Parameters:
-    type - the method for fetching the portage tree (sync, webrsync, or
-           snapshot). you can also use 'none' to skip this step
-    uri  - URI to the location of the portage snapshot if you specified
-           'snapshot' for the type
-
-
 mirror - Specifies the distfiles and portage mirror (default is empty)
 
   Usage:

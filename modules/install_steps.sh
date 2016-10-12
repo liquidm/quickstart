@@ -133,29 +133,8 @@ prepare_chroot() {
   echo "${chroot_dir}/sys" >> /tmp/install.umount
 }
 
-install_portage_tree() {
-  if [ -n "${distfiles_mirror}" ]; then
-    echo GENTOO_MIRRORS=\"${distfiles_mirror}\" >> ${chroot_dir}/etc/portage/make.conf
-  fi
-  debug install_portage_tree "tree_type is ${tree_type}"
-  if [ "${tree_type}" = "sync" ]; then
-    spawn_chroot "emerge --sync" || die "could not sync portage tree"
-  elif [ "${tree_type}" = "snapshot" ]; then
-    fetch "${portage_snapshot_uri}" "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" || die "could not fetch portage snapshot"
-    unpack_tarball "${chroot_dir}/$(get_filename_from_uri ${portage_snapshot_uri})" "${chroot_dir}/usr" || die "could not unpack portage snapshot"
-    spawn_chroot "emerge --sync" || die "could not sync portage tree"
-  elif [ "${tree_type}" = "webrsync" ]; then
-    spawn_chroot "emerge-webrsync" || die "could not emerge-webrsync"
-  elif [ "${tree_type}" = "none" ]; then
-    warn "'none' specified...skipping"
-  else
-    die "Unrecognized tree_type: ${tree_type}"
-  fi
-  if $(isafunc post_install_portage); then
-    post_install_portage || die "error running post_install_portage()"
-  else
-    debug install_portage_tree "no post_install_portage script set"
-  fi
+install_apt_tree() {
+  spawn_chroot "apt-get update" || die "could not fetch apt tree"
 }
 
 set_ssh_authorized_key() {
@@ -175,8 +154,7 @@ install_kernel() {
   if [ "${kernel_image}" = "none" ]; then
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
-    spawn_chroot "emerge -n ${kernel_image}" || die "could not emerge kernel sources"
-    spawn_chroot "emerge --config ${kernel_image}" || die "could not install bootloader"
+    spawn_chroot "apt-get install ${kernel_image}" || die "could not emerge kernel sources"
   fi
 }
 
