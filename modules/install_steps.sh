@@ -121,7 +121,7 @@ unpack_stage_tarball() {
 
 prepare_chroot() {
   debug prepare_chroot "copying /etc/resolv.conf into chroot"
-  spawn "cp /etc/resolv.conf ${chroot_dir}/etc/resolv.conf" || die "could not copy /etc/resolv.conf into chroot"
+  spawn "rm -f ${chroot_dir}/etc/resolv.conf; cp /etc/resolv.conf ${chroot_dir}/etc/resolv.conf" || die "could not copy /etc/resolv.conf into chroot"
   debug prepare_chroot "mounting proc"
   spawn "mount -t proc none ${chroot_dir}/proc" || die "could not mount proc"
   echo "${chroot_dir}/proc" >> /tmp/install.umount
@@ -154,7 +154,7 @@ install_kernel() {
   if [ "${kernel_image}" = "none" ]; then
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
-    spawn_chroot "apt-get install ${kernel_image}" || die "could not emerge kernel sources"
+    spawn_chroot "apt-get install -y ${kernel_image}" || die "could not emerge kernel sources"
   fi
 }
 
