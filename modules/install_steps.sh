@@ -233,8 +233,8 @@ EOF
   spawn_chroot "systemctl disable systemd-networkd.service" || die "failed to disable networkd"
   spawn_chroot "systemctl enable systemd-networkd.service" || die "failed to enable networkd"
 
-  spawn_chroot "systemctl disable sshd.service" || die "failed to disable sshd"
-  spawn_chroot "systemctl enable sshd.service" || die "failed to enable sshd"
+  spawn_chroot "systemctl disable ssh.service" || die "failed to disable sshd"
+  spawn_chroot "systemctl enable ssh.service" || die "failed to enable sshd"
 }
 
 install_extra_packages() {
