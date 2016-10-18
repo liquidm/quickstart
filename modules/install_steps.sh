@@ -135,6 +135,7 @@ prepare_chroot() {
 
 install_apt_tree() {
   spawn_chroot "apt-get update" || die "could not fetch apt tree"
+  spawn_chroot "apt-get remove -y cloud-init"
 }
 
 set_ssh_authorized_key() {
@@ -142,6 +143,7 @@ set_ssh_authorized_key() {
     mkdir -p "${chroot_dir}/root/.ssh/"
     echo "${ssh_authorized_key}" > "${chroot_dir}/root/.ssh/authorized_keys"
   fi
+  spawn_chroot "/usr/bin/ssh-keygen -A"
 }
 
 set_timezone() {
@@ -154,9 +156,11 @@ install_kernel() {
   if [ "${kernel_image}" = "none" ]; then
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
-    spawn_chroot "/usr/share/mdadm/mkconf > /etc/mdadm/mdadm.conf"
+    spawn "/usr/share/mdadm/mkconf > ${chroot_dir}/etc/mdadm/mdadm.conf"
     spawn_chroot "DEBIAN_FRONTEND=noninteractive apt-get -y install ${kernel_image}" || die "could not install kernel"
-    die "breakpoint"
+    for x in /dev/sd[a-z]; do
+      spawn_chroot "/usr/sbin/grub-install $x"
+    done
   fi
 }
 
