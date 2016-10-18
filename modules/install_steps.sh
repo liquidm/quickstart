@@ -135,7 +135,6 @@ prepare_chroot() {
 
 install_apt_tree() {
   spawn_chroot "apt-get update" || die "could not fetch apt tree"
-  spawn_chroot "apt-get remove -y cloud-init"
 }
 
 set_ssh_authorized_key() {
@@ -143,7 +142,6 @@ set_ssh_authorized_key() {
     mkdir -p "${chroot_dir}/root/.ssh/"
     echo "${ssh_authorized_key}" > "${chroot_dir}/root/.ssh/authorized_keys"
   fi
-  spawn_chroot "/usr/bin/ssh-keygen -A"
 }
 
 set_timezone() {
