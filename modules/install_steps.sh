@@ -154,8 +154,9 @@ install_kernel() {
   if [ "${kernel_image}" = "none" ]; then
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
-    spawn_chroot '/usr/share/mdadm/mkconf > /etc/mdadm.conf'
-    spawn_chroot 'DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install ${kernel_image}' || die "could not install kernel"
+    spawn_chroot "/usr/share/mdadm/mkconf > /etc/mdadm/mdadm.conf"
+    spawn_chroot "DEBIAN_FRONTEND=noninteractive apt-get -y install ${kernel_image}" || die "could not install kernel"
+    die "breakpoint"
   fi
 }
 
