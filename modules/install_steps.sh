@@ -17,11 +17,12 @@ prepare_rescue() {
 	spawn "ntpdate pool.ntp.org" || :
 	spawn "hwclock -w -u" || :
 	if [[ -x /usr/bin/yum ]]; then
-		spawn "/usr/bin/yum -y install gdisk parted e2fsprogs xfsprogs"
+		spawn "/usr/bin/yum -y install gdisk parted e2fsprogs xfsprogs squashfs-tools"
 	fi
 	if [[ -x /usr/bin/apt-get ]]; then
 		spawn "apt-get update"
 		spawn "apt-get install -y gdisk"
+    spawn "apt-get install -y squashfs-tools"
 	fi
 }
 

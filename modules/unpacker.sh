@@ -24,11 +24,7 @@ unpack_tarball() {
       spawn "tar -C ${dest} -${tar_flags} -f ${file}"
       ;;
     squashfs)
-      mkdir -p ${dest}/squashfs
-      mount ${file} ${dest}/squashfs
-      rsync -azvP ${dest}/squashfs ${dest}
-      umount ${dest}/squashfs
-      rmdir ${dest}/squashfs
+      unsquashfs -f -d /${dest} ${file}
       ;;
   esac
 
