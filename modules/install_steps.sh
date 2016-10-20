@@ -150,6 +150,7 @@ set_ssh_authorized_key() {
     mkdir -p "${chroot_dir}/root/.ssh/"
     echo "${ssh_authorized_key}" > "${chroot_dir}/root/.ssh/authorized_keys"
   fi
+  spawn_chroot "ssh-keygen -A"
 }
 
 set_timezone() {
