@@ -133,9 +133,11 @@ prepare_chroot() {
   spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
   echo "${chroot_dir}/sys" >> /tmp/install.umount
 
+  debug prepare_chroot "setting grub defaults"
   cat > ${chroot_dir}/etc/default/grub.d/60-liquidm-settings.cfg << EOF
 GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 net.ifnames=0 biosdevname=0"
 EOF
+  spawn_chroot "update-grub"
 }
 
 install_apt_tree() {
