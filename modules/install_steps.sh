@@ -137,7 +137,6 @@ prepare_chroot() {
   cat > ${chroot_dir}/etc/default/grub.d/60-liquidm-settings.cfg << EOF
 GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 net.ifnames=0 biosdevname=0"
 EOF
-  spawn_chroot "update-grub"
 }
 
 install_apt_tree() {
