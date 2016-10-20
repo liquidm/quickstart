@@ -13,15 +13,24 @@ unpack_tarball() {
   case $extension in
     gz)
       tar_flags="${tar_flags}z"
+      spawn "tar -C ${dest} -${tar_flags} -f ${file}"
       ;;
     bz2)
       tar_flags="${tar_flags}j"
+      spawn "tar -C ${dest} -${tar_flags} -f ${file}"
       ;;
     lz*|xz*)
       tar_flags="${tar_flags}l"
+      spawn "tar -C ${dest} -${tar_flags} -f ${file}"
+      ;;
+    squashfs)
+      mkdir -p ${dest}/squashfs
+      mount ${file} ${dest}/squashfs
+      rsync -azvP ${dest}/squashfs ${dest}
+      umount ${dest}/squashfs
+      rmdir ${dest}/squashfs
       ;;
   esac
 
-  spawn "tar -C ${dest} -${tar_flags} -f ${file}"
   return $?
 }
