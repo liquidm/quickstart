@@ -132,11 +132,16 @@ prepare_chroot() {
   debug prepare_chroot "bind-mounting /sys"
   spawn "mount -o bind /sys ${chroot_dir}/sys" || die "could not bind-mount /sys"
   echo "${chroot_dir}/sys" >> /tmp/install.umount
+
+  cat > ${chroot_dir}/etc/default/grub.d/60-liquidm-settings.cfg << EOF
+GRUB_CMDLINE_LINUX_DEFAULT="console=tty1 net.ifnames=0 biosdevname=0"
+EOF
 }
 
 install_apt_tree() {
   spawn_chroot "apt-get update" || die "could not fetch apt tree"
   spawn_chroot "apt-get remove -y cloud-guest-utils rsyslog snapd lxcfs open-iscsi"
+
 }
 
 set_ssh_authorized_key() {
