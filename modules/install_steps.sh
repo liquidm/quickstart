@@ -171,6 +171,7 @@ install_kernel() {
     fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-image-4.8.3-040803-generic_4.8.3-040803.201610200531_amd64.deb " "${chroot_dir}/root/kernel/linux-kernel.deb" || die "kernel download failed"
     spawn_chroot "dpkg -i ${chroot_dir}/root/kernel/*.deb"
 
+    die "breakpoint"
     for x in /dev/sd[a-z]; do
       spawn_chroot "/usr/sbin/grub-install $x"
     done
