@@ -164,14 +164,18 @@ install_kernel() {
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
     spawn "/usr/share/mdadm/mkconf > ${chroot_dir}/etc/mdadm/mdadm.conf"
-    mkdir -p ${chroot_dir}/root/kernel
 
+    # stock kernel first
+    spawn_chroot "DEBIAN_FRONTEND=noninteractive apt-get -y install ${kernel_image}" || die "could not install kernel"
+
+    # now the mainline kernel
+    mkdir -p ${chroot_dir}/root/kernel
     fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-headers-4.8.3-040803_4.8.3-040803.201610200531_all.deb" "${chroot_dir}/root/kernel/linux-headers-all.deb" || die "kernel download failed"
     fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-headers-4.8.3-040803-generic_4.8.3-040803.201610200531_amd64.deb" "${chroot_dir}/root/kernel/linux-headers-generic.deb" || die "kernel download failed"
     fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-image-4.8.3-040803-generic_4.8.3-040803.201610200531_amd64.deb " "${chroot_dir}/root/kernel/linux-kernel.deb" || die "kernel download failed"
-    spawn_chroot "dpkg -i ${chroot_dir}/root/kernel/*.deb"
+    spawn_chroot "dpkg -i /root/kernel/*.deb"
 
-    die "breakpoint"
+    # grub it to all disks
     for x in /dev/sd[a-z]; do
       spawn_chroot "/usr/sbin/grub-install $x"
     done
