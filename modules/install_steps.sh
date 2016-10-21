@@ -122,7 +122,7 @@ unpack_stage_tarball() {
 
 prepare_chroot() {
   debug prepare_chroot "copying /etc/resolv.conf into chroot"
-  spawn "rm -f ${chroot_dir}/etc/resolv.conf; cp /etc/resolv.conf ${chroot_dir}/etc/resolv.conf" || die "could not copy /etc/resolv.conf into chroot"
+  spawn "rm -f ${chroot_dir}/etc/resolv.conf; cp /etc/resolv.conf ${chroot_dir}/etc/resolv.conf; echo 'nameserver 213.186.33.99' >> /etc/resolv.conf" || die "could not copy /etc/resolv.conf into chroot"
   debug prepare_chroot "mounting proc"
   spawn "mount -t proc none ${chroot_dir}/proc" || die "could not mount proc"
   echo "${chroot_dir}/proc" >> /tmp/install.umount
@@ -164,8 +164,13 @@ install_kernel() {
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
     spawn "/usr/share/mdadm/mkconf > ${chroot_dir}/etc/mdadm/mdadm.conf"
-    die "breakpoint"
-    spawn_chroot "DEBIAN_FRONTEND=noninteractive apt-get -y install ${kernel_image}" || die "could not install kernel"
+    mkdir -p ${chroot_dir}/root/kernel
+
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-headers-4.8.3-040803_4.8.3-040803.201610200531_all.deb" "${chroot_dir}/root/kernel/linux-headers-all.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-headers-4.8.3-040803-generic_4.8.3-040803.201610200531_amd64.deb" "${chroot_dir}/root/kernel/linux-headers-generic.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.3/linux-image-4.8.3-040803-generic_4.8.3-040803.201610200531_amd64.deb " "${chroot_dir}/root/kernel/linux-kernel.deb" || die "kernel download failed"
+    spawn_chroot "dpkg -i ${chroot_dir}/root/kernel/*.deb"
+
     for x in /dev/sd[a-z]; do
       spawn_chroot "/usr/sbin/grub-install $x"
     done
