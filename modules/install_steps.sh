@@ -164,6 +164,7 @@ install_kernel() {
     debug install_kernel "kernel_image is 'none'...skipping kernel build"
   else
     spawn "/usr/share/mdadm/mkconf > ${chroot_dir}/etc/mdadm/mdadm.conf"
+    die "breakpoint"
     spawn_chroot "DEBIAN_FRONTEND=noninteractive apt-get -y install ${kernel_image}" || die "could not install kernel"
     for x in /dev/sd[a-z]; do
       spawn_chroot "/usr/sbin/grub-install $x"
