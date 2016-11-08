@@ -204,25 +204,10 @@ setup_fstab() {
 }
 
 setup_network_post() {
-  if [ -n "${net_devices}" ]; then
-    for net_device in ${net_devices}; do
-      local device="$(echo ${net_device} | cut -d '|' -f1)"
-      local mode="$(echo ${net_device} | cut -d '|' -f2)"
-
-      case $mode in
-      dhcp)
-        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
-[Match]
-Name=${device}
-
-[Network]
-DHCP=both
-EOF
-        ;;
-      current)
-        local gateway=$(ip route list | grep default | awk '{ print $3 }')
-        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
-        cat >> ${chroot_dir}/etc/systemd/network/${device}.network << EOF
+  local device=$(ip route | awk '/default/ { print $5 }')
+  local gateway=$(ip route list | grep default | awk '{ print $3 }')
+  local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
+  cat >> ${chroot_dir}/etc/systemd/network/default.network << EOF
 [Match]
 Name=${device}
 
@@ -230,27 +215,6 @@ Name=${device}
 Address=${ipaddress}
 Gateway=${gateway}
 EOF
-        ;;
-      lxc)
-        local gateway=$(ip route list | grep default | awk '{ print $3 }')
-        local ipaddress=$(ip addr show dev ${device} | grep 'inet .*global' | awk '{ print $2 }')
-        spawn_chroot "emerge -n netctl" || die "could not emerge netctl"
-        cat >> ${chroot_dir}/etc/netctl/lxcbr0 << EOF
-Description='lxcbr0'
-Interface=lxcbr0
-Connection=bridge
-BindsToInterfaces=(${device})
-IP=static
-Address=('${ipaddress}')
-Gateway='${gateway}'
-DNS=('8.8.8.8' '8.8.4.4')
-EOF
-        spawn_chroot "netctl enable lxcbr0" || die "could not enable network interface"
-        ;;
-      esac
-
-    done
-  fi
 
   spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules" || die "failed to touch udev rules"
 
