@@ -214,6 +214,7 @@ Name=${device}
 [Network]
 Address=${ipaddress}
 Gateway=${gateway}
+IPv6AcceptRouterAdvertisements=false
 EOF
 
   spawn_chroot "touch /etc/udev/rules.d/80-net-name-slot.rules" || die "failed to touch udev rules"
