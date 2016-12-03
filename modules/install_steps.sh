@@ -171,8 +171,9 @@ install_kernel() {
     # now the mainline kernel
     mkdir -p ${chroot_dir}/root/kernel
     fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.11/linux-headers-4.8.11-040811_4.8.11-040811.201611260431_all.deb" "${chroot_dir}/root/kernel/linux-headers-all.deb" || die "kernel download failed"
-    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.11/linux-headers-4.8.11-040811-generic_4.8.11-040811.201611260431_amd64.deb" || die "kernel download failed"
-    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.11/linux-image-4.8.11-040811-generic_4.8.11-040811.201611260431_amd64.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.11/linux-headers-4.8.11-040811-generic_4.8.11-040811.201611260431_amd64.deb" "${chroot_dir}/root/kernel/linux-headers-generic.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.8.11/linux-image-4.8.11-040811-generic_4.8.11-040811.201611260431_amd64.deb" "${chroot_dir}/root/kernel/linux-kernel.deb" || die "kernel download failed"
+
     spawn_chroot "dpkg -i /root/kernel/*.deb"
 
     # grub it to all disks
