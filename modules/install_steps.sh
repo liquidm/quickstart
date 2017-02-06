@@ -170,9 +170,9 @@ install_kernel() {
 
     # now the mainline kernel
     mkdir -p ${chroot_dir}/root/kernel
-    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.9.5/linux-headers-4.9.5-040905_4.9.5-040905.201701200532_all.deb" "${chroot_dir}/root/kernel/linux-headers-all.deb" || die "kernel download failed"
-    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.9.5/linux-headers-4.9.5-040905-generic_4.9.5-040905.201701200532_amd64.deb" "${chroot_dir}/root/kernel/linux-headers-generic.deb" || die "kernel download failed"
-    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.9.5/linux-image-4.9.5-040905-generic_4.9.5-040905.201701200532_amd64.deb" "${chroot_dir}/root/kernel/linux-kernel.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.9.8/linux-headers-4.9.8-040908_4.9.8-040908.201702040431_all.deb" "${chroot_dir}/root/kernel/linux-headers-all.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.9.8/linux-headers-4.9.8-040908-generic_4.9.8-040908.201702040431_amd64.deb" "${chroot_dir}/root/kernel/linux-headers-generic.deb" || die "kernel download failed"
+    fetch "http://kernel.ubuntu.com/~kernel-ppa/mainline/v4.9.8/linux-image-4.9.8-040908-generic_4.9.8-040908.201702040431_amd64.deb" "${chroot_dir}/root/kernel/linux-kernel.deb" || die "kernel download failed"
 
     spawn_chroot "dpkg -i /root/kernel/*.deb"
 
