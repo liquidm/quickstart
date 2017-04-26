@@ -70,6 +70,7 @@ format_devices() {
         formatcmd="mkswap ${devnode}"
         ;;
       ext2|ext3|ext4)
+        # note: if formatting is slowing down your testing, add -E nodiscard
         formatcmd="mkfs.${fs} -F ${devnode}"
         ;;
       xfs)
