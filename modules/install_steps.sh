@@ -169,7 +169,9 @@ install_kernel() {
     spawn_chroot "DEBIAN_FRONTEND=noninteractive apt-get -y install ${kernel_image}" || die "could not install kernel"
 
     # grub it to all disks
-    for x in /dev/sd[a-z] /dev/nvme[0-9]; do
+    # (note: grub will successfully install to nvme0n1,
+    #        but but the bios will not necessarily boot it from there)
+    for x in /dev/sd[a-z] /dev/nvme[0-9]n1; do
       if [ -e $x ]; then
         spawn_chroot "/usr/sbin/grub-install $x"
       fi
