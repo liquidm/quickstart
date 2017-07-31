@@ -130,7 +130,7 @@ sanity_check_config() {
   fi
   if [ -z "${stage_uri}" ]; then
     warn "stage_uri not set ... assuming cloud image"
-    stage_uri http://cloud-images.ubuntu.com/yakkety/current/yakkety-server-cloudimg-amd64.squashfs
+    stage_uri http://cloud-images.ubuntu.com/zesty/current/yakkety-server-cloudimg-amd64.squashfs
   fi
   if [ -z "${ssh_authorized_key}" ]; then
     error "ssh_authorized_key not set"
