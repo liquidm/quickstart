@@ -1,4 +1,4 @@
-chroot_dir=/mnt/gentoo
+chroot_dir=/mnt/quickstart_root
 output_logfile=/tmp/installoutput.log
 
 spawn() {

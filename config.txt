@@ -78,7 +78,7 @@ mirror - Specifies the distfiles and portage mirror (default is empty)
 
 
 chroot_dir - Specifies the directory to use for the chroot (defaults to
-             /mnt/gentoo)
+             /mnt/quickstart_root)
 
   Usage:
     chroot_dir <dir>

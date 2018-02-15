@@ -1,5 +1,12 @@
 About
 =====
+As long as you can reach rescue mode, you can make any bare metal install your
+linux distribution of choice.
+
+This version of quickstart actually works with Ubuntu.
+
+Origin
+======
 
 Back in October 2006, I got bored one weekend and decided that the Gentoo Linux
 Installer (GLI, or "the installer") sucked and was no longer on track to
