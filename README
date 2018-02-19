@@ -5,6 +5,41 @@ linux distribution of choice.
 
 This version of quickstart actually works with Ubuntu.
 
+Example profile.sh (`./quickstart -v -d profile.sh`)
+====================================================
+```
+net eth0 current
+
+part sda 1 fd00
+part sdb 1 fd00
+
+mdraid md1 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1
+
+format /dev/md1 ext4
+
+mountfs /dev/md1 ext4 /
+
+#legacy boot (either)
+post_install(){
+  spawn_chroot "/usr/sbin/grub-install /dev/sda"
+  spawn_chroot "/usr/sbin/grub-install /dev/sdb"
+}
+
+#efi-boot (or)
+post_install(){
+  chroot /mnt/quickstart_root apt-get -y install grub-efi-amd64
+  mkfs.msdos /dev/sda128
+  mkdir /mnt/quickstart_root/efi
+  mount /dev/sda128 /mnt/quickstart_root/efi
+  echo -e '\n/dev/sda128\t/efi\tvfat\tdefaults\t0 2' >> /mnt/quickstart_root/etc/fstab
+  mv /mnt/quickstart_root/boot/grub /mnt/quickstart_root/efi/
+  ln -s ../efi/grub /mnt/quickstart_root/boot/
+  chroot /mnt/quickstart_root grub-install --efi-directory=/efi --boot-directory=/efi
+  umount /mnt/quickstart_root/efi
+}
+
+```
+
 Origin
 ======
 
