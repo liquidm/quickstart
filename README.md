@@ -30,7 +30,7 @@ post_install(){
 
 #efi-boot (or)
 post_install(){
-  chroot /mnt/quickstart_root apt-get -y install grub-efi-amd64
+  spawn_chroot "apt-get -y install grub-efi-amd64"
   mkfs.msdos /dev/sda128
   mkdir /mnt/quickstart_root/efi
   mount /dev/sda128 /mnt/quickstart_root/efi
