@@ -19,10 +19,13 @@ format /dev/md1 ext4
 
 mountfs /dev/md1 ext4 /
 
+ssh_authorized_key "root pub key for first login"
+
 #legacy boot (either)
 post_install(){
   spawn_chroot "/usr/sbin/grub-install /dev/sda"
   spawn_chroot "/usr/sbin/grub-install /dev/sdb"
+  spawn_chroot "update-grub"
 }
 
 #efi-boot (or)
@@ -34,7 +37,8 @@ post_install(){
   echo -e '\n/dev/sda128\t/efi\tvfat\tdefaults\t0 2' >> /mnt/quickstart_root/etc/fstab
   mv /mnt/quickstart_root/boot/grub /mnt/quickstart_root/efi/
   ln -s ../efi/grub /mnt/quickstart_root/boot/
-  chroot /mnt/quickstart_root grub-install --efi-directory=/efi --boot-directory=/efi
+  spawn_chroot "grub-install --efi-directory=/efi --boot-directory=/efi"
+  spawn_chroot "update-grub"
   umount /mnt/quickstart_root/efi
 }
 
