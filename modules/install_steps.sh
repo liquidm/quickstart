@@ -142,8 +142,7 @@ EOF
 
 install_apt_tree() {
   spawn_chroot "apt-get update" || die "could not fetch apt tree"
-  spawn_chroot "apt-get remove -y cloud-guest-utils rsyslog snapd lxcfs open-iscsi"
-
+  spawn_chroot "apt-get remove -y cloud-guest-utils rsyslog lxcfs open-iscsi"
 }
 
 set_ssh_authorized_key() {
