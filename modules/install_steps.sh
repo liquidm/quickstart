@@ -39,7 +39,7 @@ partition() {
       local size=$(echo ${partition} | cut -d: -f3)
       add_partition "${device}" "${minor}" "${type}" "${size}" || die "could not add partition ${minor} to device ${device}"
     done
-    partprobe
+    partprobe ${device}
     sleep 5
   done
 }

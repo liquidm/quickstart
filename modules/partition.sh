@@ -4,7 +4,7 @@ create_disklabel() {
   debug create_disklabel "creating new gpt disklabel"
   debug create_disklabel "sgdisk -Z -g ${device}"
   sgdisk -Z -g ${device}
-  partprobe
+  partprobe ${device}
   sleep 5
 
   # add bios boot partition for good measure
